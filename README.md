@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 # syntecxhub-expense-tracker-app
 A simple and intuitive expense tracker that helps users manage daily finances. Record income and expenses, categorize transactions, and monitor spending habits with clear summaries. Supports budget tracking and provides insights to help users control expenses and improve financial planning.
 =======
-<<<<<<< HEAD
+
 # syntecxhub-expense-tracker-app
 A simple and intuitive expense tracker that helps users manage daily finances. Record income and expenses, categorize transactions, and monitor spending habits with clear summaries. Supports budget tracking and provides insights to help users control expenses and improve financial planning.
 =======
@@ -80,5 +80,3 @@ The frontend will print the local URL in terminal (typically `http://localhost:5
 - `npm run build` - build for production
 - `npm run preview` - preview production build
 - `npm run lint` - run ESLint
->>>>>>> 7d6797c (first commit)
->>>>>>> bd09c23 (syntecxhub expense tracker backend is complete perfectly run initial frontend stucture)
