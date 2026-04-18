@@ -1,11 +1,3 @@
-
-# syntecxhub-expense-tracker-app
-A simple and intuitive expense tracker that helps users manage daily finances. Record income and expenses, categorize transactions, and monitor spending habits with clear summaries. Supports budget tracking and provides insights to help users control expenses and improve financial planning.
-=======
-
-# syntecxhub-expense-tracker-app
-A simple and intuitive expense tracker that helps users manage daily finances. Record income and expenses, categorize transactions, and monitor spending habits with clear summaries. Supports budget tracking and provides insights to help users control expenses and improve financial planning.
-=======
 # Syntecxhub Expense Tracker
 
 Full-stack expense tracker project with:
