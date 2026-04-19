@@ -51,7 +51,7 @@ const Signup = ({ setToast }) => {
 	}
 
 	return (
-		<section className="auth-page">
+		<section className="signup-auth-page">
 			{isSubmitting && <FullPageLoader label="Creating account..." />}
 			<div className="auth-card">
 				<h2>

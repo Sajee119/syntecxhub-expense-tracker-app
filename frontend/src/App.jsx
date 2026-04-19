@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { useCallback, useState, useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import ToastContainer from './components/ToastContainer/ToastContainer'
@@ -25,6 +25,25 @@ const ProtectedRoute = ({ allow, children }) => {
 		return <Navigate to="/login" replace />
 	}
 	return children
+}
+
+const routeTitleMap = {
+  '/': 'Home',
+  '/login': 'Login',
+  '/signup': 'Sign Up',
+  '/dashboard': 'Dashboard',
+  '/account': 'Account',
+}
+
+const TitleManager = () => {
+  const location = useLocation()
+
+  useEffect(() => {
+    const pageTitle = routeTitleMap[location.pathname] || 'Home'
+    document.title = `Expense Tracker | ${pageTitle}`
+  }, [location.pathname])
+
+  return null
 }
 
 function App() {
@@ -64,6 +83,7 @@ function App() {
 				<Navbar isAuthenticated={authed} user={user} onLogout={onLogout} />
 
 				<main className="app-main">
+					<TitleManager />
 					<Routes>
 						<Route path="/" element={<Home isAuthenticated={authed} user={user} />} />
 						<Route path="/login" element={<Login onAuthSuccess={onAuthSuccess} setToast={setToast} />} />

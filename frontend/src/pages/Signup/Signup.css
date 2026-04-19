@@ -1,14 +1,14 @@
-@import '../Login/Login.css';
+
 
 /* Signup.css */
 
-.auth-page {
+.signup-auth-page {
   min-height: calc(100vh - 200px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-color: #ffffff;
 }
 
 /* Auth Card */
@@ -18,7 +18,7 @@
   padding: 2.5rem;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 10px 50px 40px rgba(7, 11, 255, 0.1);
   transition: transform 0.3s ease;
 }
 
@@ -152,7 +152,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .auth-page {
+  .signup-auth-page {
     padding: 1rem;
     min-height: calc(100vh - 150px);
   }
