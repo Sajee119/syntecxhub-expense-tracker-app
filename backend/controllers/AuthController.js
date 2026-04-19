@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
+import { SUPPORTED_CURRENCIES } from '../middlewares/AuthValidation.js';
 
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
 const passwordResetTokens = new Map();
@@ -77,7 +78,8 @@ const getCurrentUser = async (req, res) => {
             email: user.email,
             createdAt: user.createdAt,
             lastLogin: user.lastLogin,
-            currency: user.currency || 'USD'
+            currency: user.currency || 'USD',
+            supportedCurrencies: SUPPORTED_CURRENCIES
         });
     } catch (error) {
         console.error('Server error:', error);
@@ -85,5 +87,70 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
+const updateCurrentUser = async (req, res) => {
+    try {
+        const { name, email, currency } = req.body;
+        const userId = req.user.userId;
 
-export { signup, login, getCurrentUser };
+        const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+
+        if (existingUser) {
+            return res.status(409).json({ status: 'error', message: 'Email already exists.' });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { name, email, currency },
+            { new: true, runValidators: true }
+        ).select('name email currency');
+
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        return res.json({
+            status: 'success',
+            message: 'Account details updated successfully',
+            user: {
+                name: user.name,
+                email: user.email,
+                currency: user.currency || 'USD'
+            }
+        });
+    } catch (error) {
+        console.error('Server error:', error);
+        return res.status(500).json({ status: 'error', message: 'Server error' });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.userId);
+
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ status: 'error', message: 'Current password is incorrect' });
+        }
+
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ status: 'error', message: 'New password must be different from current password' });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+
+        return res.json({ status: 'success', message: 'Password changed successfully' });
+    } catch (error) {
+        console.error('Server error:', error);
+        return res.status(500).json({ status: 'error', message: 'Server error' });
+    }
+};
+
+
+export { signup, login, getCurrentUser, updateCurrentUser, changePassword };

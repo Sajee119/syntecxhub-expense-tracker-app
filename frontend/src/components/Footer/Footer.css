@@ -1,0 +1,64 @@
+/* Footer.css */
+
+.main-footer {
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  padding: 2rem 1.5rem;
+  margin-top: auto;
+  text-align: center;
+}
+
+.main-footer p {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.main-footer p:first-child {
+  font-weight: 600;
+  color: #6c63ff;
+  font-size: 1rem;
+}
+
+.main-footer p:first-child i {
+  font-size: 1rem;
+}
+
+.main-footer p:last-child i {
+  color: #6c63ff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-footer {
+    padding: 1.5rem 1rem;
+  }
+  
+  .main-footer p {
+    font-size: 0.8125rem;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .main-footer p:first-child {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-footer {
+    padding: 1rem;
+  }
+  
+  .main-footer p {
+    font-size: 0.75rem;
+  }
+  
+  .main-footer p:first-child {
+    font-size: 0.8125rem;
+  }
+}

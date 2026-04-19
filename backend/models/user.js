@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    currency: {
+        type: String,
+        enum: ['USD', 'EUR', 'INR', 'LKR', 'GBP', 'AUD', 'CAD', 'JPY', 'AED'],
+        default: 'USD'
+    },
     createdAt: {
         type: Date,
         default: Date.now

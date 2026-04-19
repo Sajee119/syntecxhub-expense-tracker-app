@@ -1,0 +1,260 @@
+/* Account.css */
+
+.account-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Account Card */
+.account-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.account-card > h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.account-card > p {
+  color: #666;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Account Info List */
+.account-list {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.account-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.account-list > div:last-child {
+  border-bottom: none;
+}
+
+.account-list span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.account-list .account-icon {
+  color: #6c63ff;
+  width: 20px;
+}
+
+.account-list strong {
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+/* Account Forms */
+.account-form {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.account-form h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-form h3 .account-icon {
+  color: #6c63ff;
+}
+
+.account-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.account-form input,
+.account-form select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.account-form input:focus,
+.account-form select:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+/* Account Actions Buttons */
+.account-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+/* Buttons */
+.account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+}
+
+.account-btn-primary {
+  background: #6c63ff;
+  color: white;
+  border: 2px solid #6c63ff;
+}
+
+.account-btn-primary:hover:not(:disabled) {
+  background: #5a52d5;
+  border-color: #5a52d5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+}
+
+.account-btn-soft {
+  background: transparent;
+  color: #6c63ff;
+  border: 2px solid #6c63ff;
+}
+
+.account-btn-soft:hover:not(:disabled) {
+  background: rgba(108, 99, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.account-btn-danger {
+  background: #ff4757;
+  color: white;
+  border: 2px solid #ff4757;
+}
+
+.account-btn-danger:hover:not(:disabled) {
+  background: #e63946;
+  border-color: #e63946;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+}
+
+.account-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Icon styling */
+.account-icon {
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .account-page {
+    padding: 1rem;
+  }
+  
+  .account-card {
+    padding: 1.5rem;
+  }
+  
+  .account-card > h2 {
+    font-size: 1.5rem;
+  }
+  
+  .account-list {
+    padding: 1rem;
+  }
+  
+  .account-list > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .account-form {
+    padding: 1rem;
+  }
+  
+  .account-form h3 {
+    font-size: 1.125rem;
+  }
+  
+  .account-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .account-actions .account-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-card {
+    padding: 1rem;
+  }
+  
+  .account-card > h2 {
+    font-size: 1.25rem;
+  }
+  
+  .account-list span,
+  .account-list strong {
+    font-size: 0.875rem;
+  }
+  
+  .account-form input,
+  .account-form select {
+    padding: 0.6rem;
+    font-size: 0.875rem;
+  }
+  
+  .account-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8125rem;
+  }
+}
