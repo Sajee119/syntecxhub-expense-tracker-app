@@ -1,16 +1,55 @@
-# React + Vite
+# Frontend - Syntecxhub Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend for expense tracking, analytics dashboard, account settings, and theme toggle.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Auth flow (login/signup)
+- Dashboard with charts and financial summaries
+- Expense tracking and history
+- Budget and spending goals UI
+- Account settings (currency, password)
+- Dark/Light mode toggle persisted via backend
+- Public pages: About, Privacy, Terms, Support, Status
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+```
 
-## Expanding the ESLint configuration
+Optional `.env` file:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+If omitted, the app uses `http://localhost:5000/api` by default.
+
+## Scripts
+
+- `npm run dev` - start Vite dev server
+- `npm run build` - create production build
+- `npm run preview` - preview build output
+- `npm run lint` - run ESLint
+
+## Run
+
+```bash
+npm run dev
+```
+
+Open the URL printed by Vite (usually `http://localhost:5173`).
+
+## Backend Requirement
+
+Backend must be running and reachable at the configured API URL.
+
+## Routing Notes
+
+Main routes include:
+
+- `/` Home
+- `/login`, `/signup`
+- `/dashboard`, `/expenses`, `/account` (protected)
+- `/about`, `/privacy`, `/terms`, `/support`, `/status`
