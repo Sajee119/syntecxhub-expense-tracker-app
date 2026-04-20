@@ -11,22 +11,31 @@ export const apiRequest = async (path, options = {}) => {
 		headers.Authorization = `Bearer ${token}`
 	}
 
-	const response = await fetch(`${APIUrl}${path}`, {
-		...options,
-		headers,
-	})
-
-	let payload = null
+	let response
 	try {
-		payload = await response.json()
+		response = await fetch(`${APIUrl}${path}`, {
+			...options,
+			headers,
+		})
 	} catch {
-		payload = null
+		throw new Error('Unable to connect to server. Please make sure backend is running.')
+	}
+
+	const rawBody = await response.text()
+	let payload = null
+
+	if (rawBody) {
+		try {
+			payload = JSON.parse(rawBody)
+		} catch {
+			payload = null
+		}
 	}
 
 	if (!response.ok) {
-		const message = payload?.message || 'Request failed'
+		const message = payload?.message || rawBody || `Request failed (${response.status})`
 		throw new Error(message)
 	}
 
-	return payload
+	return payload || {}
 }

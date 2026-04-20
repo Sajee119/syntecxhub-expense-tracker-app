@@ -1,64 +1,245 @@
 /* Footer.css */
-
 .main-footer {
-  background: #f8f9fa;
-  border-top: 1px solid #e0e0e0;
-  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #cbd5e1;
+  padding: 2rem 1.5rem 1.5rem;
   margin-top: auto;
-  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
 }
 
-.main-footer p {
+.main-footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Brand section */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #22d3ee);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.footer-brand i {
+  background: none;
+  -webkit-background-clip: unset;
+  color: #22d3ee;
+  font-size: 1.4rem;
+}
+
+/* Tagline */
+.footer-tagline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.footer-tagline i {
+  color: #22d3ee;
+  font-size: 0.9rem;
+}
+
+/* Footer links section */
+.footer-links {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 0.5rem 0;
-  color: #666;
-  font-size: 0.875rem;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.footer-links a i {
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.footer-links a:hover i {
+  transform: translateY(-2px);
+}
+
+/* Social icons */
+.footer-social {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.footer-social a:hover {
+  background: #3b82f6;
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Divider */
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  margin: 0.5rem 0;
+}
+
+/* Copyright */
+.footer-copyright {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  flex-wrap: wrap;
 }
 
-.main-footer p:first-child {
-  font-weight: 600;
-  color: #6c63ff;
-  font-size: 1rem;
+.footer-copyright i {
+  font-size: 0.7rem;
 }
 
-.main-footer p:first-child i {
-  font-size: 1rem;
+.footer-copyright a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.main-footer p:last-child i {
-  color: #6c63ff;
+.footer-copyright a:hover {
+  color: #60a5fa;
 }
 
-/* Responsive Design */
+/* Version badge */
+.footer-version {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.7rem;
+  font-family: monospace;
+  color: #64748b;
+}
+
+/* Dark mode support (light theme override) */
+[data-theme="light"] .main-footer {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-top-color: rgba(0, 0, 0, 0.05);
+  color: #475569;
+}
+
+[data-theme="light"] .footer-brand {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+[data-theme="light"] .footer-tagline,
+[data-theme="light"] .footer-links a {
+  color: #64748b;
+}
+
+[data-theme="light"] .footer-links a:hover {
+  background: rgba(0, 0, 0, 0.03);
+  color: #3b82f6;
+}
+
+[data-theme="light"] .footer-social a {
+  background: rgba(0, 0, 0, 0.04);
+  color: #64748b;
+}
+
+[data-theme="light"] .footer-social a:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .main-footer {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 1rem 1rem;
   }
   
-  .main-footer p {
-    font-size: 0.8125rem;
-    flex-direction: column;
-    gap: 0.25rem;
+  .footer-links {
+    gap: 1rem;
   }
   
-  .main-footer p:first-child {
-    font-size: 0.875rem;
+  .footer-links a span {
+    display: none;
+  }
+  
+  .footer-links a i {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  
+  .footer-links a {
+    padding: 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .main-footer {
-    padding: 1rem;
+  .footer-copyright {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.25rem;
   }
   
-  .main-footer p {
+  .footer-brand {
+    font-size: 1rem;
+  }
+  
+  .footer-tagline {
     font-size: 0.75rem;
   }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .footer-links a i,
+  .footer-social a {
+    transition: none;
+  }
   
-  .main-footer p:first-child {
-    font-size: 0.8125rem;
+  .footer-links a:hover i {
+    transform: none;
+  }
+  
+  .footer-social a:hover {
+    transform: none;
   }
 }

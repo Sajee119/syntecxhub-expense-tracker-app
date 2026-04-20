@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { SUPPORTED_CURRENCIES } from '../middlewares/AuthValidation.js';
+import { SUPPORTED_CURRENCIES, SUPPORTED_THEMES } from '../middlewares/AuthValidation.js';
 
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
 const passwordResetTokens = new Map();
@@ -10,7 +10,7 @@ const createResetToken = () => Math.random().toString(36).slice(2, 8).toUpperCas
 
 const signup = async (req, res) => {
     try {
-        const { name, email, password, currency } = req.body;
+        const { name, email, password, currency, theme } = req.body;
         const user = await User.findOne({ email });
 
         if (user) {
@@ -18,7 +18,13 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userModel = new User({ name, email, password: hashedPassword, currency: currency || 'USD' });
+        const userModel = new User({
+            name,
+            email,
+            password: hashedPassword,
+            currency: currency || 'USD',
+            theme: theme || 'light'
+        });
         await userModel.save();
 
         res.status(201).json({ status: 'success', message: 'User registered successfully' });
@@ -53,7 +59,8 @@ const login = async (req, res) => {
             user: {
                 name: user.name,
                 email: user.email,
-                currency: user.currency || 'USD'
+                currency: user.currency || 'USD',
+                theme: user.theme || 'light'
             }
         });
 
@@ -65,7 +72,7 @@ const login = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('name email createdAt lastLogin currency');
+        const user = await User.findById(req.user.userId).select('name email createdAt lastLogin currency theme');
 
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'User not found' });
@@ -79,7 +86,9 @@ const getCurrentUser = async (req, res) => {
             createdAt: user.createdAt,
             lastLogin: user.lastLogin,
             currency: user.currency || 'USD',
-            supportedCurrencies: SUPPORTED_CURRENCIES
+            theme: user.theme || 'light',
+            supportedCurrencies: SUPPORTED_CURRENCIES,
+            supportedThemes: SUPPORTED_THEMES
         });
     } catch (error) {
         console.error('Server error:', error);
@@ -89,7 +98,7 @@ const getCurrentUser = async (req, res) => {
 
 const updateCurrentUser = async (req, res) => {
     try {
-        const { name, email, currency } = req.body;
+        const { name, email, currency, theme } = req.body;
         const userId = req.user.userId;
 
         const existingUser = await User.findOne({ email, _id: { $ne: userId } });
@@ -100,9 +109,9 @@ const updateCurrentUser = async (req, res) => {
 
         const user = await User.findByIdAndUpdate(
             userId,
-            { name, email, currency },
+            { name, email, currency, ...(theme ? { theme } : {}) },
             { new: true, runValidators: true }
-        ).select('name email currency');
+        ).select('name email currency theme');
 
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'User not found' });
@@ -114,7 +123,8 @@ const updateCurrentUser = async (req, res) => {
             user: {
                 name: user.name,
                 email: user.email,
-                currency: user.currency || 'USD'
+                currency: user.currency || 'USD',
+                theme: user.theme || 'light'
             }
         });
     } catch (error) {
@@ -152,5 +162,34 @@ const changePassword = async (req, res) => {
     }
 };
 
+const updateTheme = async (req, res) => {
+    try {
+        const { theme } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.user.userId,
+            { theme },
+            { new: true, runValidators: true }
+        ).select('name email currency theme');
 
-export { signup, login, getCurrentUser, updateCurrentUser, changePassword };
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        return res.json({
+            status: 'success',
+            message: 'Theme updated successfully',
+            user: {
+                name: user.name,
+                email: user.email,
+                currency: user.currency || 'USD',
+                theme: user.theme || 'light'
+            }
+        });
+    } catch (error) {
+        console.error('Server error:', error);
+        return res.status(500).json({ status: 'error', message: 'Server error' });
+    }
+};
+
+
+export { signup, login, getCurrentUser, updateCurrentUser, changePassword, updateTheme };

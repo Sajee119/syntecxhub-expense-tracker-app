@@ -1,22 +1,33 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
 import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
 import './Dashboard.css'
 
-const initialExpenseForm = {
-  amount: '',
-  description: '',
-  date: new Date().toISOString().slice(0, 10),
-}
+const EXPENSE_CATEGORIES = ['General', 'Food', 'Transport', 'Shopping', 'Bills', 'Health', 'Entertainment', 'Education', 'Travel', 'Other']
+
+const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+const CHART_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#A9DFBF']
 
 const Dashboard = ({ user, setToast }) => {
   const [expenses, setExpenses] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [form, setForm] = useState(initialExpenseForm)
-  const [editingId, setEditingId] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [monthlyBudget, setMonthlyBudget] = useState(0)
+  const [budgetInput, setBudgetInput] = useState('')
+  const [isSavingBudget, setIsSavingBudget] = useState(false)
+  const [spendingGoals, setSpendingGoals] = useState([])
+  const [categoryBudgets, setCategoryBudgets] = useState([])
+  const [newGoalCategory, setNewGoalCategory] = useState('General')
+  const [newGoalLimit, setNewGoalLimit] = useState('')
+  const [isSavingGoal, setIsSavingGoal] = useState(false)
+
+  const isRouteNotAvailableError = useCallback((error) => {
+    const message = String(error?.message || '').toLowerCase()
+    return message.includes('cannot get') || message.includes('cannot put') || message.includes('not found')
+  }, [])
 
   const loadExpenses = useCallback(async () => {
     try {
@@ -29,15 +40,46 @@ const Dashboard = ({ user, setToast }) => {
     }
   }, [setToast])
 
+  const loadBudget = useCallback(async () => {
+    try {
+      const data = await apiRequest('/budget')
+      const budget = data?.monthlyBudget || 0
+      setMonthlyBudget(budget)
+      setBudgetInput(String(budget))
+    } catch (error) {
+      setMonthlyBudget(0)
+      setBudgetInput('0')
+      if (!isRouteNotAvailableError(error)) {
+        handleError(setToast, error)
+      }
+    }
+  }, [isRouteNotAvailableError, setToast])
+
+  const loadGoals = useCallback(async () => {
+    try {
+      const data = await apiRequest('/goals')
+      setSpendingGoals(data?.spendingGoals || [])
+      setCategoryBudgets(data?.categoryBudgets || [])
+    } catch (error) {
+      setSpendingGoals([])
+      setCategoryBudgets([])
+      if (!isRouteNotAvailableError(error)) {
+        handleError(setToast, error)
+      }
+    }
+  }, [isRouteNotAvailableError, setToast])
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       loadExpenses()
+      loadBudget()
+      loadGoals()
     }, 0)
 
     return () => {
       window.clearTimeout(timer)
     }
-  }, [loadExpenses])
+  }, [loadExpenses, loadBudget, loadGoals])
 
   const counts = useMemo(() => {
     const totalItems = expenses.length
@@ -46,95 +88,350 @@ const Dashboard = ({ user, setToast }) => {
     const month = today.getMonth()
     const year = today.getFullYear()
 
-    const thisMonth = expenses.filter((exp) => {
+    const monthExpenses = expenses.filter((exp) => {
       const date = new Date(exp.createdAt)
       return date.getMonth() === month && date.getFullYear() === year
-    }).length
+    })
 
-    return { totalItems, totalAmount, thisMonth }
+    const thisMonth = monthExpenses.length
+    const thisMonthAmount = monthExpenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+
+    return { totalItems, totalAmount, thisMonth, thisMonthAmount }
   }, [expenses])
 
-  const onChange = (event) => {
-    const { name, value } = event.target
-    setForm((previous) => ({ ...previous, [name]: value }))
-  }
+  const analytics = useMemo(() => {
+    const totalAmount = expenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    const averageAmount = expenses.length ? totalAmount / expenses.length : 0
+    const largestExpense = expenses.reduce((largest, expense) => {
+      if (!largest || Number(expense.amount || 0) > Number(largest.amount || 0)) {
+        return expense
+      }
+      return largest
+    }, null)
 
-  const resetForm = () => {
-    setForm(initialExpenseForm)
-    setEditingId(null)
-  }
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+    sevenDaysAgo.setHours(0, 0, 0, 0)
 
-  const onSubmit = async (event) => {
+    const last7DaysAmount = expenses
+      .filter((expense) => new Date(expense.createdAt) >= sevenDaysAgo)
+      .reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+
+    return { averageAmount, largestExpense, last7DaysAmount }
+  }, [expenses])
+
+  const weeklyTrend = useMemo(() => {
+    const totals = new Array(7).fill(0)
+
+    expenses.forEach((expense) => {
+      const dayIndex = new Date(expense.createdAt).getDay()
+      totals[dayIndex] += Number(expense.amount || 0)
+    })
+
+    const maxAmount = Math.max(...totals, 0)
+
+    return WEEKDAY_LABELS.map((label, index) => ({
+      label,
+      amount: totals[index],
+      width: maxAmount > 0 ? (totals[index] / maxAmount) * 100 : 0,
+    }))
+  }, [expenses])
+
+  const pieChartData = useMemo(() => {
+    const map = new Map()
+    const total = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+
+    expenses.forEach((expense) => {
+      const category = expense.category || 'General'
+      map.set(category, (map.get(category) || 0) + Number(expense.amount || 0))
+    })
+
+    return Array.from(map.entries())
+      .map(([name, value], index) => ({
+        name,
+        value: parseFloat(value.toFixed(2)),
+        percentage: total > 0 ? ((value / total) * 100).toFixed(1) : 0,
+        fill: CHART_COLORS[index % CHART_COLORS.length],
+      }))
+      .sort((a, b) => b.value - a.value)
+  }, [expenses])
+
+  const monthlyTrendData = useMemo(() => {
+    const map = new Map()
+    const today = new Date()
+    const currentYear = today.getFullYear()
+
+    // Create data for last 12 months
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(currentYear, today.getMonth() - i, 1)
+      const year = date.getFullYear()
+      const month = date.getMonth()
+      const key = `${year}-${month}`
+      map.set(key, 0)
+    }
+
+    expenses.forEach((expense) => {
+      const date = new Date(expense.createdAt)
+      const key = `${date.getFullYear()}-${date.getMonth()}`
+      if (map.has(key)) {
+        map.set(key, map.get(key) + Number(expense.amount || 0))
+      }
+    })
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return Array.from(map.entries()).map(([key, amount]) => {
+      const [year, month] = key.split('-').map(Number)
+      const monthName = monthNames[month]
+      return {
+        name: `${monthName} '${year.toString().slice(-2)}`,
+        amount: parseFloat(amount.toFixed(2)),
+      }
+    })
+  }, [expenses])
+
+  const recentExpenses = useMemo(() => {
+    return [...expenses]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5)
+  }, [expenses])
+
+  const budgetProgress = monthlyBudget > 0
+    ? Math.min((counts.thisMonthAmount / monthlyBudget) * 100, 100)
+    : 0
+
+  const topSpendingDay = useMemo(() => {
+    if (expenses.length === 0) return null
+    return expenses.reduce((max, expense) => {
+      const currentAmount = Number(expense.amount || 0)
+      const maxAmount = Number(max?.amount || 0)
+      return currentAmount > maxAmount ? expense : max
+    })
+  }, [expenses])
+
+  // Feature 4: Top Spending Categories (top 3)
+  const topSpendingCategories = useMemo(() => {
+    const categoryTotals = new Map()
+    expenses.forEach((expense) => {
+      const category = expense.category || 'General'
+      categoryTotals.set(category, (categoryTotals.get(category) || 0) + Number(expense.amount || 0))
+    })
+    return Array.from(categoryTotals.entries())
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+  }, [expenses])
+
+  // Feature 7: Daily Average Breakdown
+  const dailyAverageBreakdown = useMemo(() => {
+    if (expenses.length === 0) return 0
+    const daysWithExpenses = new Set()
+    expenses.forEach((expense) => {
+      const date = new Date(expense.createdAt).toLocaleDateString()
+      daysWithExpenses.add(date)
+    })
+    const totalAmount = expenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    return daysWithExpenses.size > 0 ? totalAmount / daysWithExpenses.size : 0
+  }, [expenses])
+
+  // Feature 8: Quick Stats Summary (Year-to-date, 30-day, 7-day)
+  const quickStats = useMemo(() => {
+    const today = new Date()
+    const yearStart = new Date(today.getFullYear(), 0, 1)
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+    const yearToDate = expenses.filter(exp => new Date(exp.createdAt) >= yearStart)
+      .reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    const last30Days = expenses.filter(exp => new Date(exp.createdAt) >= thirtyDaysAgo)
+      .reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    const last7Days = expenses.filter(exp => new Date(exp.createdAt) >= sevenDaysAgo)
+      .reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+
+    return {
+      yearToDate,
+      last30Days,
+      last7Days,
+      yearToDateCount: yearToDate > 0 ? expenses.filter(exp => new Date(exp.createdAt) >= yearStart).length : 0,
+      last30DaysCount: last30Days > 0 ? expenses.filter(exp => new Date(exp.createdAt) >= thirtyDaysAgo).length : 0,
+    }
+  }, [expenses])
+
+  // Feature 5: Spending Velocity (trend indicator)
+  const spendingVelocity = useMemo(() => {
+    const today = new Date()
+    const currentWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const previousWeek = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000)
+
+    const currentWeekAmount = expenses.filter(exp => new Date(exp.createdAt) >= currentWeek)
+      .reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    const previousWeekAmount = expenses.filter(exp => {
+      const expDate = new Date(exp.createdAt)
+      return expDate >= previousWeek && expDate < currentWeek
+    }).reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+
+    let trend = 'stable'
+    let change = 0
+    if (previousWeekAmount > 0) {
+      change = ((currentWeekAmount - previousWeekAmount) / previousWeekAmount) * 100
+      if (change > 10) trend = 'increasing'
+      else if (change < -10) trend = 'decreasing'
+    } else if (currentWeekAmount > 0) {
+      trend = 'increasing'
+      change = 100
+    }
+
+    return { trend, change, currentWeekAmount, previousWeekAmount }
+  }, [expenses])
+
+  // Feature 3: Month-over-Month Comparison
+  const monthOverMonthComparison = useMemo(() => {
+    const today = new Date()
+    const currentMonth = today.getMonth()
+    const currentYear = today.getFullYear()
+
+    const thisMonthExpenses = expenses.filter((exp) => {
+      const date = new Date(exp.createdAt)
+      return date.getMonth() === currentMonth && date.getFullYear() === currentYear
+    }).reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+
+    let previousMonthExpenses = 0
+    if (currentMonth === 0) {
+      previousMonthExpenses = expenses.filter((exp) => {
+        const date = new Date(exp.createdAt)
+        return date.getMonth() === 11 && date.getFullYear() === currentYear - 1
+      }).reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    } else {
+      previousMonthExpenses = expenses.filter((exp) => {
+        const date = new Date(exp.createdAt)
+        return date.getMonth() === currentMonth - 1 && date.getFullYear() === currentYear
+      }).reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
+    }
+
+    let change = 0
+    if (previousMonthExpenses > 0) {
+      change = ((thisMonthExpenses - previousMonthExpenses) / previousMonthExpenses) * 100
+    }
+
+    return { thisMonth: thisMonthExpenses, previousMonth: previousMonthExpenses, change }
+  }, [expenses])
+
+  // Feature 2 & 6: Budget Alerts & Budget Remaining
+  const budgetAlert = useMemo(() => {
+    const isExceeded = monthlyBudget > 0 && counts.thisMonthAmount > monthlyBudget
+    const remaining = monthlyBudget - counts.thisMonthAmount
+    const percentage = monthlyBudget > 0 ? (counts.thisMonthAmount / monthlyBudget) * 100 : 0
+
+    return {
+      isExceeded,
+      remaining: Math.max(remaining, 0),
+      percentage: Math.min(percentage, 100),
+      alertMessage: isExceeded ? `Budget exceeded by ${user?.currency || 'USD'} ${Math.abs(remaining).toFixed(2)}` : null
+    }
+  }, [monthlyBudget, counts.thisMonthAmount, user?.currency])
+
+  // Feature 10: Category-wise Budget & spending
+  const categorySpending = useMemo(() => {
+    const today = new Date()
+    const month = today.getMonth()
+    const year = today.getFullYear()
+
+    const categoryTotals = new Map()
+    expenses
+      .filter((exp) => {
+        const date = new Date(exp.createdAt)
+        return date.getMonth() === month && date.getFullYear() === year
+      })
+      .forEach((expense) => {
+        const category = expense.category || 'General'
+        categoryTotals.set(category, (categoryTotals.get(category) || 0) + Number(expense.amount || 0))
+      })
+
+    return Array.from(categoryTotals.entries())
+      .map(([category, spent]) => {
+        const budget = categoryBudgets.find(b => b.category === category)?.budget || 0
+        const goal = spendingGoals.find(g => g.category === category)?.limit || 0
+        return {
+          category,
+          spent,
+          budget,
+          goal,
+          isOverBudget: budget > 0 && spent > budget,
+          isOverGoal: goal > 0 && spent > goal
+        }
+      })
+      .sort((a, b) => b.spent - a.spent)
+  }, [expenses, categoryBudgets, spendingGoals])
+
+  const onSaveBudget = async (event) => {
     event.preventDefault()
 
-    if (!form.amount || !form.description || !form.date) {
-      setToast({ type: 'error', message: 'Please fill amount, description and date.' })
+    const nextBudget = Number(budgetInput)
+
+    if (!Number.isFinite(nextBudget) || nextBudget < 0) {
+      setToast({ type: 'error', message: 'Enter a valid monthly budget amount.' })
       return
     }
 
-    const payload = {
-      amount: Number(form.amount),
-      description: form.description,
-      date: form.date,
-    }
-
-    setIsSubmitting(true)
+    setIsSavingBudget(true)
     try {
-      if (editingId) {
-        await apiRequest(`/expenses/${editingId}`, {
-          method: 'PUT',
-          body: JSON.stringify(payload),
-        })
-        handleSuccess(setToast, 'Expense updated successfully')
-      } else {
-        await apiRequest('/expenses', {
-          method: 'POST',
-          body: JSON.stringify(payload),
-        })
-        handleSuccess(setToast, 'Expense added successfully')
-      }
-
-      resetForm()
-      setIsLoading(true)
-      await loadExpenses()
+      const data = await apiRequest('/budget', {
+        method: 'PUT',
+        body: JSON.stringify({ monthlyBudget: nextBudget }),
+      })
+      setMonthlyBudget(data?.monthlyBudget || nextBudget)
+      handleSuccess(setToast, 'Monthly budget saved')
     } catch (error) {
       handleError(setToast, error)
+      setBudgetInput(String(monthlyBudget))
     } finally {
-      setIsSubmitting(false)
+      setIsSavingBudget(false)
     }
   }
 
-  const onEdit = (expense) => {
-    setEditingId(expense._id)
-    setForm({
-      amount: String(expense.amount),
-      description: expense.text || '',
-      date: new Date(expense.createdAt).toISOString().slice(0, 10),
-    })
-  }
+  const onAddSpendingGoal = async (event) => {
+    event.preventDefault()
 
-  const onDelete = async (expenseId) => {
-    setIsSubmitting(true)
+    const limit = Number(newGoalLimit)
+    if (!Number.isFinite(limit) || limit <= 0) {
+      setToast({ type: 'error', message: 'Enter a valid spending limit.' })
+      return
+    }
+
+    setIsSavingGoal(true)
     try {
-      await apiRequest(`/expenses/${expenseId}`, { method: 'DELETE' })
-      handleSuccess(setToast, 'Expense deleted successfully')
-      if (editingId === expenseId) {
-        resetForm()
-      }
-      setIsLoading(true)
-      await loadExpenses()
+      const data = await apiRequest('/goals', {
+        method: 'POST',
+        body: JSON.stringify({ category: newGoalCategory, limit }),
+      })
+      setSpendingGoals(data?.spendingGoals || [])
+      setNewGoalLimit('')
+      handleSuccess(setToast, 'Spending goal added')
     } catch (error) {
       handleError(setToast, error)
     } finally {
-      setIsSubmitting(false)
+      setIsSavingGoal(false)
+    }
+  }
+
+  const onDeleteSpendingGoal = async (category) => {
+    try {
+      const data = await apiRequest('/goals', {
+        method: 'DELETE',
+        body: JSON.stringify({ category }),
+      })
+      setSpendingGoals(data?.spendingGoals || [])
+      handleSuccess(setToast, 'Spending goal deleted')
+    } catch (error) {
+      handleError(setToast, error)
     }
   }
 
   return (
     <section className="dashboard-page">
-      {(isLoading || isSubmitting) && (
-        <FullPageLoader label={isLoading ? 'Loading expenses...' : 'Saving changes...'} />
+      {isLoading && (
+        <FullPageLoader label="Loading expenses..." />
       )}
+
       <header className="dashboard-header">
         <h1>
           <i className="fa-solid fa-chart-column" aria-hidden="true" /> Hi {user?.name || 'User'}, here is your dashboard
@@ -160,102 +457,386 @@ const Dashboard = ({ user, setToast }) => {
           <h4>This Month</h4>
           <p>{counts.thisMonth}</p>
         </article>
+        <article className="dashboard-count-card">
+          <i className="fa-solid fa-filter-circle-dollar" aria-hidden="true" />
+          <h4>This Month Spent</h4>
+          <p>
+            {user?.currency || 'USD'} {counts.thisMonthAmount.toFixed(2)}
+          </p>
+        </article>
       </div>
 
-      <div className="dashboard-content-grid">
-        <div className="dashboard-panel">
+      <div className="dashboard-insights-grid">
+        <article className="dashboard-panel">
           <h3>
-            <i className="fa-solid fa-pen-to-square" aria-hidden="true" /> {editingId ? 'Edit Expense' : 'Add Expense'}
+            <i className="fa-solid fa-bullseye" aria-hidden="true" /> Monthly Budget
           </h3>
-          <form className="expense-form" onSubmit={onSubmit}>
-            <label>
-              Amount
-              <input
-                type="number"
-                name="amount"
-                min="0"
-                step="0.01"
-                value={form.amount}
-                onChange={onChange}
-                required
-              />
-            </label>
-            <label>
-              Description
-              <input
-                type="text"
-                name="description"
-                value={form.description}
-                onChange={onChange}
-                placeholder="e.g. Grocery, Transport"
-                required
-              />
-            </label>
-            <label>
-              Date
-              <input type="date" name="date" value={form.date} onChange={onChange} required />
-            </label>
-            <div className="expense-form-actions">
-              <button className="db-btn db-btn-primary" type="submit" disabled={isSubmitting}>
-                {editingId ? 'Update Expense' : 'Add Expense'}
-              </button>
-              {editingId && (
-                <button className="db-btn db-btn-soft" type="button" onClick={resetForm}>
-                  Cancel Edit
-                </button>
-              )}
-            </div>
-          </form>
-        </div>
 
-        <div className="dashboard-panel">
-          <h3>
-            <i className="fa-solid fa-list-check" aria-hidden="true" /> All Expenses
-          </h3>
-          {isLoading ? (
-            null
-          ) : expenses.length === 0 ? (
-            <p>No expenses found. Add your first one.</p>
-          ) : (
-            <div className="expense-list-wrap">
-              <table className="expense-table">
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expenses.map((expense) => (
-                    <tr key={expense._id}>
-                      <td>{expense.text}</td>
-                      <td>
-                        {user?.currency || 'USD'} {Number(expense.amount).toFixed(2)}
-                      </td>
-                      <td>{new Date(expense.createdAt).toLocaleDateString()}</td>
-                      <td className="expense-actions-cell">
-                        <button className="db-btn db-btn-soft" onClick={() => onEdit(expense)} type="button">
-                          <i className="fa-solid fa-pen" aria-hidden="true" /> Edit
-                        </button>
-                        <button
-                          className="db-btn db-btn-danger"
-                          onClick={() => onDelete(expense._id)}
-                          disabled={isSubmitting}
-                          type="button"
-                        >
-                          <i className="fa-solid fa-trash" aria-hidden="true" /> Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <form className="budget-form" onSubmit={onSaveBudget}>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={budgetInput}
+              onChange={(event) => setBudgetInput(event.target.value)}
+              placeholder="Set budget amount"
+              disabled={isSavingBudget}
+            />
+            <button type="submit" className="db-btn db-btn-primary" disabled={isSavingBudget}>
+              {isSavingBudget ? 'Saving...' : 'Save Budget'}
+            </button>
+          </form>
+
+          <div className="budget-progress">
+            <div className="budget-progress-track">
+              <div className="budget-progress-fill" style={{ width: `${budgetProgress}%` }} />
+            </div>
+            <div className="budget-progress-text">
+              <span>
+                Spent this month: {user?.currency || 'USD'} {counts.thisMonthAmount.toFixed(2)}
+              </span>
+              <strong>
+                Budget: {monthlyBudget > 0 ? `${user?.currency || 'USD'} ${monthlyBudget.toFixed(2)}` : 'Not set'}
+              </strong>
+            </div>
+          </div>
+
+          {budgetAlert.alertMessage && (
+            <div className="alert alert-warning">
+              <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" /> {budgetAlert.alertMessage}
             </div>
           )}
-        </div>
+
+          {monthlyBudget > 0 && (
+            <div className="budget-remaining">
+              <p>
+                <strong>Budget Remaining:</strong> {user?.currency || 'USD'} {budgetAlert.remaining.toFixed(2)}
+              </p>
+            </div>
+          )}
+        </article>
+
+        <article className="dashboard-panel">
+          <h3>
+            <i className="fa-solid fa-lightbulb" aria-hidden="true" /> Quick Insights
+          </h3>
+          <div className="insight-grid">
+            <div className="insight-card">
+              <span>Average Expense</span>
+              <strong>
+                {user?.currency || 'USD'} {analytics.averageAmount.toFixed(2)}
+              </strong>
+            </div>
+            <div className="insight-card">
+              <span>Last 7 Days</span>
+              <strong>
+                {user?.currency || 'USD'} {analytics.last7DaysAmount.toFixed(2)}
+              </strong>
+            </div>
+            <div className="insight-card">
+              <span>Largest Expense</span>
+              <strong>
+                {user?.currency || 'USD'} {Number(analytics.largestExpense?.amount || 0).toFixed(2)}
+              </strong>
+            </div>
+          </div>
+
+          {weeklyTrend.some((entry) => entry.amount > 0) && (
+            <div className="weekday-trend">
+              {weeklyTrend.map((entry) => (
+                <div key={entry.label} className="weekday-row">
+                  <span>{entry.label}</span>
+                  <div className="weekday-bar-track">
+                    <div className="weekday-bar-fill" style={{ width: `${entry.width}%` }} />
+                  </div>
+                  <strong>
+                    {user?.currency || 'USD'} {entry.amount.toFixed(2)}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          )}
+        </article>
       </div>
+
+      <div className="dashboard-charts-grid">
+        {pieChartData.length > 0 && (
+          <article className="dashboard-panel chart-panel">
+            <h3>
+              <i className="fa-solid fa-pie-chart" aria-hidden="true" /> Category Distribution
+            </h3>
+            <div className="chart-container">
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percentage }) => `${name} ${percentage}%`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => `${user?.currency || 'USD'} ${value.toFixed(2)}`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="pie-legend">
+              {pieChartData.map((entry) => (
+                <div key={entry.name} className="pie-legend-item">
+                  <span className="pie-color" style={{ backgroundColor: entry.fill }} />
+                  <span>{entry.name}</span>
+                  <strong>{user?.currency || 'USD'} {entry.value.toFixed(2)}</strong>
+                </div>
+              ))}
+            </div>
+          </article>
+        )}
+
+        {monthlyTrendData.some((m) => m.amount > 0) && (
+          <article className="dashboard-panel chart-panel">
+            <h3>
+              <i className="fa-solid fa-chart-line" aria-hidden="true" /> Monthly Spending Trend
+            </h3>
+            <div className="chart-container">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={monthlyTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => `${user?.currency || 'USD'} ${value.toFixed(2)}`} />
+                  <Legend />
+                  <Bar dataKey="amount" fill="#45B7D1" name="Amount Spent" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+        )}
+      </div>
+
+      <div className="dashboard-features-grid">
+        {/* Quick Stats Summary */}
+        <article className="dashboard-panel stats-panel">
+          <h3>
+            <i className="fa-solid fa-chart-bar" aria-hidden="true" /> Quick Stats Summary
+          </h3>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <span>Year-to-Date</span>
+              <strong>{user?.currency || 'USD'} {quickStats.yearToDate.toFixed(2)}</strong>
+              <small>{quickStats.yearToDateCount} expenses</small>
+            </div>
+            <div className="stat-item">
+              <span>Last 30 Days</span>
+              <strong>{user?.currency || 'USD'} {quickStats.last30Days.toFixed(2)}</strong>
+              <small>{quickStats.last30DaysCount} expenses</small>
+            </div>
+            <div className="stat-item">
+              <span>Last 7 Days</span>
+              <strong>{user?.currency || 'USD'} {quickStats.last7Days.toFixed(2)}</strong>
+              <small>Daily avg: {user?.currency || 'USD'} {(quickStats.last7Days / 7).toFixed(2)}</small>
+            </div>
+          </div>
+        </article>
+
+        {/* Top Spending Categories */}
+        {topSpendingCategories.length > 0 && (
+          <article className="dashboard-panel top-categories-panel">
+            <h3>
+              <i className="fa-solid fa-fire" aria-hidden="true" /> Top Spending Categories
+            </h3>
+            <div className="top-categories-list">
+              {topSpendingCategories.map((cat, index) => (
+                <div key={cat.name} className="top-category-item">
+                  <span className="category-rank">#{index + 1}</span>
+                  <span className="category-name">{cat.name}</span>
+                  <strong>{user?.currency || 'USD'} {cat.value.toFixed(2)}</strong>
+                </div>
+              ))}
+            </div>
+          </article>
+        )}
+
+        {/* Spending Velocity */}
+        <article className="dashboard-panel velocity-panel">
+          <h3>
+            <i className="fa-solid fa-gauge" aria-hidden="true" /> Spending Velocity
+          </h3>
+          <div className="velocity-content">
+            <div className={`velocity-indicator ${spendingVelocity.trend}`}>
+              <i className={`fa-solid ${spendingVelocity.trend === 'increasing' ? 'fa-arrow-trend-up' : spendingVelocity.trend === 'decreasing' ? 'fa-arrow-trend-down' : 'fa-arrow-right'}`} aria-hidden="true" />
+              <span>{spendingVelocity.trend === 'increasing' ? 'Increasing' : spendingVelocity.trend === 'decreasing' ? 'Decreasing' : 'Stable'}</span>
+            </div>
+            <div className="velocity-stats">
+              <p>This week vs Last week: <strong>{spendingVelocity.change >= 0 ? '+' : ''}{spendingVelocity.change.toFixed(1)}%</strong></p>
+              <p>Current: {user?.currency || 'USD'} {spendingVelocity.currentWeekAmount.toFixed(2)}</p>
+            </div>
+          </div>
+        </article>
+
+        {/* Month-over-Month Comparison */}
+        <article className="dashboard-panel mom-panel">
+          <h3>
+            <i className="fa-solid fa-arrows-left-right" aria-hidden="true" /> Month-over-Month
+          </h3>
+          <div className="mom-content">
+            <div className="mom-item">
+              <span>This Month</span>
+              <strong>{user?.currency || 'USD'} {monthOverMonthComparison.thisMonth.toFixed(2)}</strong>
+            </div>
+            <div className="mom-change">
+              <i className={`fa-solid ${monthOverMonthComparison.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'}`} aria-hidden="true" />
+              <span>{monthOverMonthComparison.change >= 0 ? '+' : ''}{monthOverMonthComparison.change.toFixed(1)}%</span>
+            </div>
+            <div className="mom-item">
+              <span>Last Month</span>
+              <strong>{user?.currency || 'USD'} {monthOverMonthComparison.previousMonth.toFixed(2)}</strong>
+            </div>
+          </div>
+        </article>
+
+        {/* Daily Average Breakdown */}
+        <article className="dashboard-panel daily-avg-panel">
+          <h3>
+            <i className="fa-solid fa-calendar-days" aria-hidden="true" /> Daily Average
+          </h3>
+          <div className="daily-avg-content">
+            <strong className="daily-avg-amount">{user?.currency || 'USD'} {dailyAverageBreakdown.toFixed(2)}</strong>
+            <p>Per day across all expense days</p>
+          </div>
+        </article>
+
+        {/* Spending Goals */}
+        <article className="dashboard-panel goals-panel">
+          <h3>
+            <i className="fa-solid fa-bullseye" aria-hidden="true" /> Spending Goals
+          </h3>
+          <form onSubmit={onAddSpendingGoal} className="goal-form">
+            <select value={newGoalCategory} onChange={(e) => setNewGoalCategory(e.target.value)}>
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={newGoalLimit}
+              onChange={(e) => setNewGoalLimit(e.target.value)}
+              placeholder="Goal limit"
+              disabled={isSavingGoal}
+            />
+            <button type="submit" className="db-btn db-btn-primary" disabled={isSavingGoal}>
+              Add Goal
+            </button>
+          </form>
+
+          {spendingGoals.length > 0 && (
+            <div className="goals-list">
+              {spendingGoals.map((goal) => (
+                <div key={goal.category} className="goal-item">
+                  <span>{goal.category}</span>
+                  <strong>{user?.currency || 'USD'} {goal.limit.toFixed(2)}</strong>
+                  <button 
+                    className="db-btn db-btn-danger db-btn-sm"
+                    onClick={() => onDeleteSpendingGoal(goal.category)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </article>
+
+        {/* Category-wise Budget */}
+        {categorySpending.length > 0 && (
+          <article className="dashboard-panel category-budget-panel">
+            <h3>
+              <i className="fa-solid fa-sitemap" aria-hidden="true" /> Category Breakdown
+            </h3>
+            <div className="category-budget-list">
+              {categorySpending.map((cat) => (
+                <div key={cat.category} className={`category-budget-item ${cat.isOverBudget ? 'over-budget' : ''} ${cat.isOverGoal ? 'over-goal' : ''}`}>
+                  <div className="category-info">
+                    <span className="cat-name">{cat.category}</span>
+                    <span className="cat-spent">{user?.currency || 'USD'} {cat.spent.toFixed(2)}</span>
+                  </div>
+                  {(cat.budget > 0 || cat.goal > 0) && (
+                    <div className="category-limits">
+                      {cat.budget > 0 && (
+                        <small>Budget: {user?.currency || 'USD'} {cat.budget.toFixed(2)} {cat.isOverBudget && '⚠️'}</small>
+                      )}
+                      {cat.goal > 0 && (
+                        <small>Goal: {user?.currency || 'USD'} {cat.goal.toFixed(2)} {cat.isOverGoal && '⚠️'}</small>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </article>
+        )}
+      </div>
+
+      <article className="dashboard-panel additional-insights">
+        <h3>
+          <i className="fa-solid fa-magnifying-glass" aria-hidden="true" /> Additional Insights
+        </h3>
+        <div className="insights-row">
+          <div className="insight-stat">
+            <span>Total Categories</span>
+            <strong className="stat-number">{pieChartData.length}</strong>
+          </div>
+          <div className="insight-stat">
+            <span>Highest Spending Category</span>
+            <strong className="stat-name">{pieChartData[0]?.name || 'N/A'}</strong>
+          </div>
+          {topSpendingDay && (
+            <div className="insight-stat">
+              <span>Largest Single Expense</span>
+              <strong className="stat-name">{topSpendingDay.text || 'N/A'}</strong>
+            </div>
+          )}
+          <div className="insight-stat">
+            <span>Average Daily Spending</span>
+            <strong className="stat-number">
+              {user?.currency || 'USD'} {
+                expenses.length > 0 
+                  ? (expenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0) / Math.max(1, expenses.length)).toFixed(2)
+                  : '0.00'
+              }
+            </strong>
+          </div>
+        </div>
+      </article>
+
+      {recentExpenses.length > 0 && (
+        <div className="dashboard-panel recent-expenses-panel">
+          <h3>
+            <i className="fa-solid fa-clock-rotate-left" aria-hidden="true" /> Recent Activity
+          </h3>
+          <div className="recent-expenses-list">
+            {recentExpenses.map((expense) => (
+              <article key={expense._id} className="recent-expense-item">
+                <div>
+                  <strong>{expense.text || 'Expense'}</strong>
+                  <p>{new Date(expense.createdAt).toLocaleDateString()}</p>
+                </div>
+                <span>{expense.category || 'General'}</span>
+                <strong>
+                  {user?.currency || 'USD'} {Number(expense.amount || 0).toFixed(2)}
+                </strong>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -5,6 +5,8 @@ import cors from 'cors';
 import { connectDB, isMongoConnected, mongoose } from './config/db.js';
 import authRouter from './routers/AuthRouter.js';
 import expenseRouter from './routers/Expense.js';
+import budgetRouter from './routers/BudgetRouter.js';
+import goalsRouter from './routers/GoalsRouter.js';
 
 dotenv.config();
 
@@ -42,6 +44,8 @@ app.use(cors());
 
 app.use('/api/users', authRouter);
 app.use('/api/expenses', expenseRouter);
+app.use('/api/budget', budgetRouter);
+app.use('/api/goals', goalsRouter);
 
 const startListening = async () => {
     if (server?.listening) {

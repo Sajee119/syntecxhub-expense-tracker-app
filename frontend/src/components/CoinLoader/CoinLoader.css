@@ -1,5 +1,4 @@
 /* CoinLoader.css */
-
 .coin-loader-wrap {
   display: flex;
   flex-direction: column;
@@ -7,100 +6,175 @@
   justify-content: center;
   gap: 1rem;
   padding: 2rem;
+  min-height: 200px;
 }
 
 .coin-loader {
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle at 30% 30%, #f9d423, #f4c10f);
-  border-radius: 50%;
   position: relative;
-  animation: coinSpin 1.5s ease-in-out infinite;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 35%, #ffd700, #f0a500);
+  border-radius: 50%;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  animation: coinSpin 1.2s ease-in-out infinite;
+  transform-style: preserve-3d;
 }
 
+/* Coin edge effect */
 .coin-loader::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
-  pointer-events: none;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%);
+  filter: blur(2px);
 }
 
+/* Coin shine effect */
 .coin-loader::after {
   content: '💰';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.5rem;
+  font-size: 2rem;
   opacity: 0.8;
+  animation: coinGlow 0.8s ease-in-out infinite alternate;
 }
 
+/* Loading text */
 .coin-loader-wrap span:last-child {
-  color: #000000;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  animation: pulse 1.5s ease-in-out infinite;
+  color: var(--text-secondary, #475569);
+  letter-spacing: 0.5px;
+  animation: textPulse 1.5s ease-in-out infinite;
 }
 
+/* Animations */
 @keyframes coinSpin {
   0% {
     transform: rotateY(0deg) scale(1);
   }
   50% {
-    transform: rotateY(180deg) scale(1.1);
+    transform: rotateY(180deg) scale(1.05);
+    background: radial-gradient(circle at 70% 35%, #ffd700, #e89400);
   }
   100% {
     transform: rotateY(360deg) scale(1);
+    background: radial-gradient(circle at 30% 35%, #ffd700, #f0a500);
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
+@keyframes coinGlow {
+  0% {
     opacity: 0.6;
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.3);
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.7;
   }
   50% {
     opacity: 1;
   }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .coin-loader {
-    width: 50px;
-    height: 50px;
+/* Variants */
+.coin-loader-wrap.small .coin-loader {
+  width: 48px;
+  height: 48px;
+}
+
+.coin-loader-wrap.small .coin-loader::after {
+  font-size: 1.25rem;
+}
+
+.coin-loader-wrap.small span:last-child {
+  font-size: 0.8rem;
+}
+
+.coin-loader-wrap.large .coin-loader {
+  width: 120px;
+  height: 120px;
+}
+
+.coin-loader-wrap.large .coin-loader::after {
+  font-size: 3rem;
+}
+
+.coin-loader-wrap.large span:last-child {
+  font-size: 1.1rem;
+}
+
+/* Inline loader variant */
+.coin-loader-wrap.inline {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  min-height: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.coin-loader-wrap.inline .coin-loader {
+  width: 24px;
+  height: 24px;
+  animation-duration: 0.8s;
+}
+
+.coin-loader-wrap.inline .coin-loader::after {
+  font-size: 0.7rem;
+}
+
+.coin-loader-wrap.inline span:last-child {
+  font-size: 0.85rem;
+  animation: none;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .coin-loader-wrap span:last-child {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .coin-loader {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .coin-loader,
+  .coin-loader::after,
+  .coin-loader-wrap span:last-child {
+    animation: none;
   }
   
-  .coin-loader::after {
-    font-size: 1.25rem;
+  .coin-loader {
+    animation: none;
+    transform: rotateY(0deg);
   }
   
   .coin-loader-wrap span:last-child {
-    font-size: 0.8125rem;
+    opacity: 1;
   }
 }
 
-@media (max-width: 480px) {
-  .coin-loader {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .coin-loader::after {
-    font-size: 1rem;
-  }
-  
-  .coin-loader-wrap {
-    gap: 0.75rem;
-    padding: 1.5rem;
-  }
-  
-  .coin-loader-wrap span:last-child {
-    font-size: 0.75rem;
-  }
+/* Accessibility */
+.coin-loader-wrap:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }

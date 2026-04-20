@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
+import ConfirmationModal from '../../components/ConfirmationModal/ConfirmationModal'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
@@ -17,6 +18,7 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 	const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' })
 	const [isSavingProfile, setIsSavingProfile] = useState(false)
 	const [isChangingPassword, setIsChangingPassword] = useState(false)
+	const [pendingAction, setPendingAction] = useState(null)
 
 	const onProfileChange = (event) => {
 		const { name, value } = event.target
@@ -28,9 +30,7 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 		setPasswordForm((previous) => ({ ...previous, [name]: value }))
 	}
 
-	const onProfileSubmit = async (event) => {
-		event.preventDefault()
-
+	const saveProfile = async () => {
 		if (!profileForm.name || !profileForm.email || !profileForm.currency) {
 			setToast({ type: 'error', message: 'Please complete your profile fields.' })
 			return
@@ -55,9 +55,7 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 		}
 	}
 
-	const onPasswordSubmit = async (event) => {
-		event.preventDefault()
-
+	const savePassword = async () => {
 		if (!passwordForm.currentPassword || !passwordForm.newPassword) {
 			setToast({ type: 'error', message: 'Please provide current and new password.' })
 			return
@@ -79,11 +77,68 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 		}
 	}
 
+	const requestActionConfirmation = (actionType) => {
+		setPendingAction(actionType)
+	}
+
+	const closeConfirmation = () => {
+		setPendingAction(null)
+	}
+
+	const confirmAction = async () => {
+		if (pendingAction === 'profile') {
+			await saveProfile()
+		}
+
+		if (pendingAction === 'password') {
+			await savePassword()
+		}
+
+		if (pendingAction === 'logout') {
+			onLogout()
+		}
+
+		closeConfirmation()
+	}
+
+	const modalConfig = {
+		profile: {
+			title: 'Confirm Profile Update',
+			message: 'Do you want to save these account settings changes?',
+			confirmText: 'Yes, Save',
+			danger: false,
+		},
+		password: {
+			title: 'Confirm Password Change',
+			message: 'Are you sure you want to update your password?',
+			confirmText: 'Yes, Update',
+			danger: true,
+		},
+		logout: {
+			title: 'Confirm Logout',
+			message: 'Do you want to logout from your account?',
+			confirmText: 'Yes, Logout',
+			danger: true,
+		},
+	}
+
+	const activeModal = pendingAction ? modalConfig[pendingAction] : null
+
 	return (
 		<section className="account-page">
 			{(isSavingProfile || isChangingPassword) && (
 				<FullPageLoader label={isSavingProfile ? 'Saving profile...' : 'Changing password...'} />
 			)}
+			<ConfirmationModal
+				open={Boolean(activeModal)}
+				title={activeModal?.title}
+				message={activeModal?.message}
+				confirmText={activeModal?.confirmText}
+				onConfirm={confirmAction}
+				onCancel={closeConfirmation}
+				danger={Boolean(activeModal?.danger)}
+				disabled={isSavingProfile || isChangingPassword}
+			/>
 			<div className="account-card">
 				<h2>
 					<i className="fa-solid fa-id-card account-icon" aria-hidden="true" /> My Account
@@ -111,7 +166,10 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 					</div>
 				</div>
 
-				<form className="account-form" onSubmit={onProfileSubmit}>
+				<form className="account-form" onSubmit={(event) => {
+					event.preventDefault()
+					requestActionConfirmation('profile')
+				}}>
 					<h3>
 						<i className="fa-solid fa-pen-to-square account-icon" aria-hidden="true" /> Change Login Details
 					</h3>
@@ -138,7 +196,10 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 					</button>
 				</form>
 
-				<form className="account-form" onSubmit={onPasswordSubmit}>
+				<form className="account-form" onSubmit={(event) => {
+					event.preventDefault()
+					requestActionConfirmation('password')
+				}}>
 					<h3>
 						<i className="fa-solid fa-key account-icon" aria-hidden="true" /> Change Password
 					</h3>
@@ -171,7 +232,7 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 					<Link className="account-btn account-btn-soft" to="/dashboard">
 						<i className="fa-solid fa-chart-column account-icon" aria-hidden="true" /> Back to Dashboard
 					</Link>
-					<button className="account-btn account-btn-danger" type="button" onClick={onLogout}>
+					<button className="account-btn account-btn-danger" type="button" onClick={() => requestActionConfirmation('logout')}>
 						<i className="fa-solid fa-right-from-bracket account-icon" aria-hidden="true" /> Logout
 					</button>
 				</div>

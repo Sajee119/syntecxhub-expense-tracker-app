@@ -1,14 +1,18 @@
 
 import User from '../models/user.js';
 
+const EXPENSE_CATEGORIES = ['General', 'Food', 'Transport', 'Shopping', 'Bills', 'Health', 'Entertainment', 'Education', 'Travel', 'Other'];
+
 
 const addExpenses = async (req, res) => {
-    const { amount, description, date } = req.body;
+    const { amount, description, date, category } = req.body;
     const userId = req.user.userId;
 
     if (!amount || !description || !date) {
         return res.status(400).json({ status: 'error', message: 'All fields are required' });
     }
+
+    const safeCategory = EXPENSE_CATEGORIES.includes(category) ? category : 'General';
 
     try {
         await User.findByIdAndUpdate(
@@ -17,6 +21,7 @@ const addExpenses = async (req, res) => {
                 $push: { 
                     expenses: { 
                         text: description, 
+                        category: safeCategory,
                         amount, 
                         createdAt: date 
                     } 
@@ -50,7 +55,7 @@ const getExpenses = async (req, res) => {
 const updateExpense = async (req, res) => {
 
     const { id: expenseId } = req.params;
-    const { amount, description, date } = req.body;
+    const { amount, description, date, category } = req.body;
     const userId = req.user.userId;
     try {
         const userData = await User.findById(userId);
@@ -65,6 +70,7 @@ const updateExpense = async (req, res) => {
         }
 
         userData.expenses[expenseIndex].text = description;
+    userData.expenses[expenseIndex].category = EXPENSE_CATEGORIES.includes(category) ? category : 'General';
         userData.expenses[expenseIndex].amount = amount;
         userData.expenses[expenseIndex].createdAt = date;
         await userData.save();

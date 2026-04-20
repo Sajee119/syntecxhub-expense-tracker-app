@@ -1,0 +1,244 @@
+/* ConfirmationModal.css */
+.confirm-popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-popup-container {
+  background: var(--modal-bg, #ffffff);
+  border-radius: 1.25rem;
+  max-width: 420px;
+  width: 90%;
+  margin: auto;
+  padding: 1.75rem 1.75rem 1.5rem;
+  box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Title */
+.confirm-popup-container h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary, #0f172a);
+}
+
+.confirm-popup-container h4 i {
+  font-size: 1.5rem;
+}
+
+.confirm-popup-container h4 i.fa-triangle-exclamation {
+  color: #f59e0b;
+}
+
+.confirm-popup-container h4 i.fa-circle-question {
+  color: #3b82f6;
+}
+
+/* Message */
+.confirm-popup-container p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary, #475569);
+  line-height: 1.5;
+  font-size: 0.95rem;
+  padding-left: 2.25rem;
+}
+
+/* Actions */
+.confirm-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
+
+.confirm-btn i {
+  font-size: 0.9rem;
+}
+
+.confirm-btn-soft {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.confirm-btn-soft:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.confirm-btn-soft:active {
+  transform: translateY(0);
+}
+
+.confirm-btn-primary {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.confirm-btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.confirm-btn-danger {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.confirm-btn-danger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+.confirm-btn-primary:active,
+.confirm-btn-danger:active,
+.confirm-btn-soft:active {
+  transform: translateY(0);
+}
+
+/* Disabled state */
+.confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Danger variant specific styles */
+.confirm-popup-container.danger h4 i {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+/* Dark mode support */
+[data-theme="dark"] .confirm-popup-container {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .confirm-popup-container h4 {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .confirm-popup-container p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .confirm-btn-soft {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .confirm-btn-soft:hover {
+  background: #475569;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .confirm-popup-container {
+    padding: 1.25rem 1.25rem 1rem;
+    width: 92%;
+  }
+  
+  .confirm-popup-container h4 {
+    font-size: 1.2rem;
+  }
+  
+  .confirm-popup-container h4 i {
+    font-size: 1.3rem;
+  }
+  
+  .confirm-popup-container p {
+    font-size: 0.9rem;
+    padding-left: 2rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .confirm-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .confirm-popup-backdrop,
+  .confirm-popup-container,
+  .confirm-popup-container.danger h4 i {
+    animation: none;
+  }
+  
+  .confirm-btn:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility focus */
+.confirm-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.confirm-popup-backdrop:focus-visible {
+  outline: none;
+}

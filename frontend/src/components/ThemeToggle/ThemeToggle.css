@@ -1,0 +1,80 @@
+
+.theme-toggle {
+    position: fixed;
+    left: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: currentColor;
+    font-size: 1.5rem;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--focus-ring, #3b82f6);
+    outline-offset: 2px;
+}
+
+.theme-toggle i {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease;
+    font-size: 1.5rem;
+}
+
+/* Light mode specific */
+.theme-toggle.light i {
+    transform: rotate(0deg);
+}
+
+/* Dark mode specific */
+.theme-toggle.dark i {
+    transform: rotate(90deg);
+}
+
+/* Disabled state */
+.theme-toggle:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Hover animation for the icon */
+.theme-toggle:hover i {
+    animation: gentleWobble 0.5s ease;
+}
+
+@keyframes gentleWobble {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(12deg); }
+    75% { transform: rotate(-6deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* For reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle,
+    .theme-toggle i,
+    .theme-toggle:hover i {
+        transition: none;
+        animation: none;
+        transform: none;
+    }
+}
