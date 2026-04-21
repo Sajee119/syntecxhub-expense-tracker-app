@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import './StatusPage.css'
+// import {homepage} from '../../assets/home.png'
+import homeimg from '../../assets/home.png'
 
 const StatusPage = () => {
   const [subscriberEmail, setSubscriberEmail] = useState('')
@@ -111,6 +113,9 @@ const StatusPage = () => {
           </p>
         </section>
         <div className="status-overall">
+            <div className="center-img">
+                <img src={homeimg} alt="Expense Tracker Home" />
+            </div>
           <div className="status-overall-badge">
             <i className="fa-solid fa-circle-check" aria-hidden="true" />
             All Systems Operational

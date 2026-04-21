@@ -597,3 +597,18 @@
     display: none;
   }
 }
+
+.center-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  & img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.4));
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
