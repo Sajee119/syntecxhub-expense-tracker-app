@@ -37,18 +37,6 @@ const Footer = () => {
           </Link>
         </div>
         
-        <div className="footer-social">
-          <a href="https://github.com/expensetracker" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <i className="fa-brands fa-github" aria-hidden="true" />
-          </a>
-          <a href="https://twitter.com/expensetracker" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <i className="fa-brands fa-twitter" aria-hidden="true" />
-          </a>
-          <a href="https://linkedin.com/company/expensetracker" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <i className="fa-brands fa-linkedin-in" aria-hidden="true" />
-          </a>
-        </div>
-        
         <div className="footer-divider" />
         
         <div className="footer-copyright">
