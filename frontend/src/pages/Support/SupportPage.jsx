@@ -19,13 +19,6 @@ const SupportPage = () => {
     setTicketForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleTicketSubmit = (e) => {
-    e.preventDefault()
-    // In a real app, this would send to an API
-    alert('Support ticket submitted! We will respond within 24 hours.')
-    setTicketForm({ name: '', email: '', category: 'general', message: '' })
-  }
-
   const faqItems = [
     {
       question: 'How do I add or edit an expense?',
@@ -107,7 +100,7 @@ const SupportPage = () => {
               <i className="fa-solid fa-message" aria-hidden="true" /> Live Chat Support
             </h3>
             <p>Get instant answers from our support team</p>
-            <button className="support-chat-btn" onClick={() => alert('Chat window would open here')}>
+            <button className="support-chat-btn" onClick={() => window.open("https://wa.me/94783566823", "_blank")}>
               <i className="fa-solid fa-comment-dots" aria-hidden="true" /> Start Live Chat
             </button>
             <div className="support-chat-availability">
@@ -195,7 +188,12 @@ const SupportPage = () => {
             <h2>
               <i className="fa-solid fa-ticket" aria-hidden="true" /> Submit a Support Ticket
             </h2>
-            <form className="support-ticket-form" onSubmit={handleTicketSubmit}>
+            <form
+              className="support-ticket-form"
+              action="https://formsubmit.co/sajeepan634@gmail.com"
+              method="POST"
+            >
+              <input type="hidden" name="_subject" value="New Support Ticket - Expense Tracker" />
               <input
                 type="text"
                 name="name"

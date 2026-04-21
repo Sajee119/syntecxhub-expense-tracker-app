@@ -4,6 +4,7 @@ import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
+import { DEFAULT_CURRENCY } from '../../utils/currency'
 import './Login.css'
 
 const Login = ({ onAuthSuccess, setToast }) => {
@@ -34,7 +35,7 @@ const Login = ({ onAuthSuccess, setToast }) => {
 				{
 					name: data?.user?.name || 'User',
 					email: data?.user?.email || form.email,
-					currency: data?.user?.currency || 'USD',
+					currency: data?.user?.currency || DEFAULT_CURRENCY,
 				},
 				data?.token,
 			)

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { SUPPORTED_CURRENCIES, SUPPORTED_THEMES } from '../middlewares/AuthValidation.js';
+import { SUPPORTED_CURRENCIES, SUPPORTED_CURRENCY_CODES, SUPPORTED_THEMES } from '../middlewares/AuthValidation.js';
 
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
 const passwordResetTokens = new Map();
@@ -88,6 +88,7 @@ const getCurrentUser = async (req, res) => {
             currency: user.currency || 'USD',
             theme: user.theme || 'light',
             supportedCurrencies: SUPPORTED_CURRENCIES,
+            supportedCurrencyCodes: SUPPORTED_CURRENCY_CODES,
             supportedThemes: SUPPORTED_THEMES
         });
     } catch (error) {

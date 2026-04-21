@@ -1,4 +1,5 @@
 import './ConfirmationModal.css'
+import { createPortal } from 'react-dom'
 
 const ConfirmationModal = ({
 	open,
@@ -13,7 +14,7 @@ const ConfirmationModal = ({
 }) => {
 	if (!open) return null
 
-	return (
+	const modalContent = (
 		<div 
 			className="confirm-popup-backdrop" 
 			role="dialog" 
@@ -54,6 +55,12 @@ const ConfirmationModal = ({
 			</div>
 		</div>
 	)
+
+	if (typeof document === 'undefined') {
+		return modalContent
+	}
+
+	return createPortal(modalContent, document.body)
 }
 
 export default ConfirmationModal

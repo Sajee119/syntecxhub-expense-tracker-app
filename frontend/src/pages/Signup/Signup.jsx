@@ -4,16 +4,15 @@ import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
+import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '../../utils/currency'
 import './Signup.css'
-
-const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'INR', 'LKR', 'GBP', 'AUD', 'CAD', 'JPY', 'AED']
 
 const Signup = ({ setToast }) => {
 	const [form, setForm] = useState({
 		name: '',
 		email: '',
 		password: '',
-		currency: 'USD',
+		currency: DEFAULT_CURRENCY,
 	})
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const navigate = useNavigate()
@@ -100,8 +99,8 @@ const Signup = ({ setToast }) => {
 						Preferred Currency
 						<select name="currency" value={form.currency} onChange={onChange}>
 							{SUPPORTED_CURRENCIES.map((currency) => (
-								<option key={currency} value={currency}>
-									{currency}
+								<option key={currency.code} value={currency.code}>
+									{currency.code} - {currency.name} ({currency.symbol})
 								</option>
 							))}
 						</select>

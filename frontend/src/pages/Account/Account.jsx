@@ -5,16 +5,16 @@ import ConfirmationModal from '../../components/ConfirmationModal/ConfirmationMo
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
+import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY, getCurrencySymbol } from '../../utils/currency'
 import './Account.css'
-
-const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'INR', 'LKR', 'GBP', 'AUD', 'CAD', 'JPY', 'AED']
 
 const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 	const [profileForm, setProfileForm] = useState({
 		name: user?.name || '',
 		email: user?.email || '',
-		currency: user?.currency || 'USD',
+		currency: user?.currency || DEFAULT_CURRENCY,
 	})
+	const currencySymbol = getCurrencySymbol(user?.currency)
 	const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' })
 	const [isSavingProfile, setIsSavingProfile] = useState(false)
 	const [isChangingPassword, setIsChangingPassword] = useState(false)
@@ -162,7 +162,7 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 						<span>
 							<i className="fa-solid fa-coins account-icon" aria-hidden="true" /> Currency
 						</span>
-						<strong>{user?.currency || 'USD'}</strong>
+						<strong>{currencySymbol} ({user?.currency || DEFAULT_CURRENCY})</strong>
 					</div>
 				</div>
 
@@ -185,8 +185,8 @@ const Account = ({ user, onLogout, onUserUpdate, setToast }) => {
 						Currency
 						<select name="currency" value={profileForm.currency} onChange={onProfileChange}>
 							{SUPPORTED_CURRENCIES.map((currency) => (
-								<option key={currency} value={currency}>
-									{currency}
+								<option key={currency.code} value={currency.code}>
+									{currency.code} - {currency.name} ({currency.symbol})
 								</option>
 							))}
 						</select>

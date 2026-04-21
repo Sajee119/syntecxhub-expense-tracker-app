@@ -20,7 +20,7 @@ const Footer = () => {
         
         <div className="footer-links">
           <Link to="/privacy">
-            <i className="fa-solid fa-shield-haltered" aria-hidden="true" />
+            <i className="fa-solid fa-shield-halved" aria-hidden="true" />
             <span>Privacy</span>
           </Link>
           <Link to="/terms">

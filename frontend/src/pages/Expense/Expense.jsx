@@ -3,6 +3,7 @@ import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
+import { getCurrencySymbol } from '../../utils/currency'
 import './Expense.css'
 
 const EXPENSE_CATEGORIES = ['General', 'Food', 'Transport', 'Shopping', 'Bills', 'Health', 'Entertainment', 'Education', 'Travel', 'Other']
@@ -15,6 +16,7 @@ const initialExpenseForm = {
 }
 
 const Expense = ({ user, setToast }) => {
+  const currencySymbol = getCurrencySymbol(user?.currency)
   const [expenses, setExpenses] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [form, setForm] = useState(initialExpenseForm)
@@ -423,7 +425,7 @@ const Expense = ({ user, setToast }) => {
             Showing {sortedExpenses.length} result{sortedExpenses.length === 1 ? '' : 's'} out of {expenses.length}
             {filteredTotalAmount > 0 && (
               <span className="expense-total">
-                • Total: {user?.currency || 'USD'} {filteredTotalAmount.toFixed(2)}
+                • Total: {currencySymbol} {filteredTotalAmount.toFixed(2)}
               </span>
             )}
           </p>
@@ -434,7 +436,7 @@ const Expense = ({ user, setToast }) => {
                 <div key={category} className="top-category-item">
                   <span>{category}</span>
                   <strong>
-                    {user?.currency || 'USD'} {Number(amount).toFixed(2)}
+                    {currencySymbol} {Number(amount).toFixed(2)}
                   </strong>
                 </div>
               ))}
@@ -448,7 +450,7 @@ const Expense = ({ user, setToast }) => {
                   <div className="category-breakdown-head">
                     <span>{entry.category}</span>
                     <strong>
-                      {user?.currency || 'USD'} {entry.amount.toFixed(2)}
+                      {currencySymbol} {entry.amount.toFixed(2)}
                     </strong>
                   </div>
                   <div className="category-breakdown-bar">
@@ -481,7 +483,7 @@ const Expense = ({ user, setToast }) => {
                       <td>{expense.text}</td>
                       <td>{expense.category || 'General'}</td>
                       <td>
-                        {user?.currency || 'USD'} {Number(expense.amount).toFixed(2)}
+                        {currencySymbol} {Number(expense.amount).toFixed(2)}
                       </td>
                       <td>{new Date(expense.createdAt).toLocaleDateString()}</td>
                       <td className="expense-actions-cell">

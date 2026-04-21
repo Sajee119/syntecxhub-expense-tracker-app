@@ -4,6 +4,7 @@ import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
+import { getCurrencySymbol } from '../../utils/currency'
 import './Dashboard.css'
 
 const EXPENSE_CATEGORIES = ['General', 'Food', 'Transport', 'Shopping', 'Bills', 'Health', 'Entertainment', 'Education', 'Travel', 'Other']
@@ -13,6 +14,7 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const CHART_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#A9DFBF']
 
 const Dashboard = ({ user, setToast }) => {
+  const currencySymbol = getCurrencySymbol(user?.currency)
   const [expenses, setExpenses] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [monthlyBudget, setMonthlyBudget] = useState(0)
@@ -325,9 +327,9 @@ const Dashboard = ({ user, setToast }) => {
       isExceeded,
       remaining: Math.max(remaining, 0),
       percentage: Math.min(percentage, 100),
-      alertMessage: isExceeded ? `Budget exceeded by ${user?.currency || 'USD'} ${Math.abs(remaining).toFixed(2)}` : null
+      alertMessage: isExceeded ? `Budget exceeded by ${currencySymbol} ${Math.abs(remaining).toFixed(2)}` : null
     }
-  }, [monthlyBudget, counts.thisMonthAmount, user?.currency])
+  }, [monthlyBudget, counts.thisMonthAmount, currencySymbol])
 
   // Feature 10: Category-wise Budget & spending
   const categorySpending = useMemo(() => {
@@ -449,7 +451,7 @@ const Dashboard = ({ user, setToast }) => {
           <i className="fa-solid fa-dollar-sign" aria-hidden="true" />
           <h4>Total Spent</h4>
           <p>
-            {user?.currency || 'USD'} {counts.totalAmount.toFixed(2)}
+            {currencySymbol} {counts.totalAmount.toFixed(2)}
           </p>
         </article>
         <article className="dashboard-count-card">
@@ -461,7 +463,7 @@ const Dashboard = ({ user, setToast }) => {
           <i className="fa-solid fa-filter-circle-dollar" aria-hidden="true" />
           <h4>This Month Spent</h4>
           <p>
-            {user?.currency || 'USD'} {counts.thisMonthAmount.toFixed(2)}
+            {currencySymbol} {counts.thisMonthAmount.toFixed(2)}
           </p>
         </article>
       </div>
@@ -493,10 +495,10 @@ const Dashboard = ({ user, setToast }) => {
             </div>
             <div className="budget-progress-text">
               <span>
-                Spent this month: {user?.currency || 'USD'} {counts.thisMonthAmount.toFixed(2)}
+                Spent this month: {currencySymbol} {counts.thisMonthAmount.toFixed(2)}
               </span>
               <strong>
-                Budget: {monthlyBudget > 0 ? `${user?.currency || 'USD'} ${monthlyBudget.toFixed(2)}` : 'Not set'}
+                Budget: {monthlyBudget > 0 ? `${currencySymbol} ${monthlyBudget.toFixed(2)}` : 'Not set'}
               </strong>
             </div>
           </div>
@@ -510,7 +512,7 @@ const Dashboard = ({ user, setToast }) => {
           {monthlyBudget > 0 && (
             <div className="budget-remaining">
               <p>
-                <strong>Budget Remaining:</strong> {user?.currency || 'USD'} {budgetAlert.remaining.toFixed(2)}
+                <strong>Budget Remaining:</strong> {currencySymbol} {budgetAlert.remaining.toFixed(2)}
               </p>
             </div>
           )}
@@ -524,19 +526,19 @@ const Dashboard = ({ user, setToast }) => {
             <div className="insight-card">
               <span>Average Expense</span>
               <strong>
-                {user?.currency || 'USD'} {analytics.averageAmount.toFixed(2)}
+                {currencySymbol} {analytics.averageAmount.toFixed(2)}
               </strong>
             </div>
             <div className="insight-card">
               <span>Last 7 Days</span>
               <strong>
-                {user?.currency || 'USD'} {analytics.last7DaysAmount.toFixed(2)}
+                {currencySymbol} {analytics.last7DaysAmount.toFixed(2)}
               </strong>
             </div>
             <div className="insight-card">
               <span>Largest Expense</span>
               <strong>
-                {user?.currency || 'USD'} {Number(analytics.largestExpense?.amount || 0).toFixed(2)}
+                {currencySymbol} {Number(analytics.largestExpense?.amount || 0).toFixed(2)}
               </strong>
             </div>
           </div>
@@ -550,7 +552,7 @@ const Dashboard = ({ user, setToast }) => {
                     <div className="weekday-bar-fill" style={{ width: `${entry.width}%` }} />
                   </div>
                   <strong>
-                    {user?.currency || 'USD'} {entry.amount.toFixed(2)}
+                    {currencySymbol} {entry.amount.toFixed(2)}
                   </strong>
                 </div>
               ))}
@@ -582,7 +584,7 @@ const Dashboard = ({ user, setToast }) => {
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `${user?.currency || 'USD'} ${value.toFixed(2)}`} />
+                  <Tooltip formatter={(value) => `${currencySymbol} ${value.toFixed(2)}`} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -591,7 +593,7 @@ const Dashboard = ({ user, setToast }) => {
                 <div key={entry.name} className="pie-legend-item">
                   <span className="pie-color" style={{ backgroundColor: entry.fill }} />
                   <span>{entry.name}</span>
-                  <strong>{user?.currency || 'USD'} {entry.value.toFixed(2)}</strong>
+                  <strong>{currencySymbol} {entry.value.toFixed(2)}</strong>
                 </div>
               ))}
             </div>
@@ -609,7 +611,7 @@ const Dashboard = ({ user, setToast }) => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip formatter={(value) => `${user?.currency || 'USD'} ${value.toFixed(2)}`} />
+                  <Tooltip formatter={(value) => `${currencySymbol} ${value.toFixed(2)}`} />
                   <Legend />
                   <Bar dataKey="amount" fill="#45B7D1" name="Amount Spent" radius={[8, 8, 0, 0]} />
                 </BarChart>
@@ -628,18 +630,18 @@ const Dashboard = ({ user, setToast }) => {
           <div className="stats-grid">
             <div className="stat-item">
               <span>Year-to-Date</span>
-              <strong>{user?.currency || 'USD'} {quickStats.yearToDate.toFixed(2)}</strong>
+              <strong>{currencySymbol} {quickStats.yearToDate.toFixed(2)}</strong>
               <small>{quickStats.yearToDateCount} expenses</small>
             </div>
             <div className="stat-item">
               <span>Last 30 Days</span>
-              <strong>{user?.currency || 'USD'} {quickStats.last30Days.toFixed(2)}</strong>
+              <strong>{currencySymbol} {quickStats.last30Days.toFixed(2)}</strong>
               <small>{quickStats.last30DaysCount} expenses</small>
             </div>
             <div className="stat-item">
               <span>Last 7 Days</span>
-              <strong>{user?.currency || 'USD'} {quickStats.last7Days.toFixed(2)}</strong>
-              <small>Daily avg: {user?.currency || 'USD'} {(quickStats.last7Days / 7).toFixed(2)}</small>
+              <strong>{currencySymbol} {quickStats.last7Days.toFixed(2)}</strong>
+              <small>Daily avg: {currencySymbol} {(quickStats.last7Days / 7).toFixed(2)}</small>
             </div>
           </div>
         </article>
@@ -655,7 +657,7 @@ const Dashboard = ({ user, setToast }) => {
                 <div key={cat.name} className="top-category-item">
                   <span className="category-rank">#{index + 1}</span>
                   <span className="category-name">{cat.name}</span>
-                  <strong>{user?.currency || 'USD'} {cat.value.toFixed(2)}</strong>
+                  <strong>{currencySymbol} {cat.value.toFixed(2)}</strong>
                 </div>
               ))}
             </div>
@@ -674,7 +676,7 @@ const Dashboard = ({ user, setToast }) => {
             </div>
             <div className="velocity-stats">
               <p>This week vs Last week: <strong>{spendingVelocity.change >= 0 ? '+' : ''}{spendingVelocity.change.toFixed(1)}%</strong></p>
-              <p>Current: {user?.currency || 'USD'} {spendingVelocity.currentWeekAmount.toFixed(2)}</p>
+              <p>Current: {currencySymbol} {spendingVelocity.currentWeekAmount.toFixed(2)}</p>
             </div>
           </div>
         </article>
@@ -687,7 +689,7 @@ const Dashboard = ({ user, setToast }) => {
           <div className="mom-content">
             <div className="mom-item">
               <span>This Month</span>
-              <strong>{user?.currency || 'USD'} {monthOverMonthComparison.thisMonth.toFixed(2)}</strong>
+              <strong>{currencySymbol} {monthOverMonthComparison.thisMonth.toFixed(2)}</strong>
             </div>
             <div className="mom-change">
               <i className={`fa-solid ${monthOverMonthComparison.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'}`} aria-hidden="true" />
@@ -695,7 +697,7 @@ const Dashboard = ({ user, setToast }) => {
             </div>
             <div className="mom-item">
               <span>Last Month</span>
-              <strong>{user?.currency || 'USD'} {monthOverMonthComparison.previousMonth.toFixed(2)}</strong>
+              <strong>{currencySymbol} {monthOverMonthComparison.previousMonth.toFixed(2)}</strong>
             </div>
           </div>
         </article>
@@ -706,7 +708,7 @@ const Dashboard = ({ user, setToast }) => {
             <i className="fa-solid fa-calendar-days" aria-hidden="true" /> Daily Average
           </h3>
           <div className="daily-avg-content">
-            <strong className="daily-avg-amount">{user?.currency || 'USD'} {dailyAverageBreakdown.toFixed(2)}</strong>
+            <strong className="daily-avg-amount">{currencySymbol} {dailyAverageBreakdown.toFixed(2)}</strong>
             <p>Per day across all expense days</p>
           </div>
         </article>
@@ -741,7 +743,7 @@ const Dashboard = ({ user, setToast }) => {
               {spendingGoals.map((goal) => (
                 <div key={goal.category} className="goal-item">
                   <span>{goal.category}</span>
-                  <strong>{user?.currency || 'USD'} {goal.limit.toFixed(2)}</strong>
+                  <strong>{currencySymbol} {goal.limit.toFixed(2)}</strong>
                   <button 
                     className="db-btn db-btn-danger db-btn-sm"
                     onClick={() => onDeleteSpendingGoal(goal.category)}
@@ -765,15 +767,15 @@ const Dashboard = ({ user, setToast }) => {
                 <div key={cat.category} className={`category-budget-item ${cat.isOverBudget ? 'over-budget' : ''} ${cat.isOverGoal ? 'over-goal' : ''}`}>
                   <div className="category-info">
                     <span className="cat-name">{cat.category}</span>
-                    <span className="cat-spent">{user?.currency || 'USD'} {cat.spent.toFixed(2)}</span>
+                    <span className="cat-spent">{currencySymbol} {cat.spent.toFixed(2)}</span>
                   </div>
                   {(cat.budget > 0 || cat.goal > 0) && (
                     <div className="category-limits">
                       {cat.budget > 0 && (
-                        <small>Budget: {user?.currency || 'USD'} {cat.budget.toFixed(2)} {cat.isOverBudget && '⚠️'}</small>
+                        <small>Budget: {currencySymbol} {cat.budget.toFixed(2)} {cat.isOverBudget && '⚠️'}</small>
                       )}
                       {cat.goal > 0 && (
-                        <small>Goal: {user?.currency || 'USD'} {cat.goal.toFixed(2)} {cat.isOverGoal && '⚠️'}</small>
+                        <small>Goal: {currencySymbol} {cat.goal.toFixed(2)} {cat.isOverGoal && '⚠️'}</small>
                       )}
                     </div>
                   )}
@@ -806,7 +808,7 @@ const Dashboard = ({ user, setToast }) => {
           <div className="insight-stat">
             <span>Average Daily Spending</span>
             <strong className="stat-number">
-              {user?.currency || 'USD'} {
+              {currencySymbol} {
                 expenses.length > 0 
                   ? (expenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0) / Math.max(1, expenses.length)).toFixed(2)
                   : '0.00'
@@ -830,7 +832,7 @@ const Dashboard = ({ user, setToast }) => {
                 </div>
                 <span>{expense.category || 'General'}</span>
                 <strong>
-                  {user?.currency || 'USD'} {Number(expense.amount || 0).toFixed(2)}
+                  {currencySymbol} {Number(expense.amount || 0).toFixed(2)}
                 </strong>
               </article>
             ))}

@@ -134,8 +134,8 @@ const TermsPage = () => {
             <div className="terms-contact">
               <h3>Questions about these Terms?</h3>
               <p>Our legal team is available to clarify any questions you may have.</p>
-              <a href="mailto:legal@expensetracker.com" className="terms-contact-email">
-                <i className="fa-solid fa-envelope" aria-hidden="true" /> legal@expensetracker.com
+              <a href="mailto:sajeepan634@gmail.com" className="terms-contact-email">
+                <i className="fa-solid fa-envelope" aria-hidden="true" /> sajeepan634@gmail.com
               </a>
             </div>
             <ul className="terms-list" style={{ marginTop: '1rem' }}>
