@@ -1,4 +1,4 @@
-export const APIUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+export const APIUrl = import.meta.env.VITE_API_URL
 
 export const apiRequest = async (path, options = {}) => {
 	const token = localStorage.getItem('token')
