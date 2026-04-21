@@ -1,4 +1,3 @@
-/* Dashboard.css */
 .dashboard-page {
   max-width: 1400px;
   margin: 0 auto;
@@ -6,13 +5,9 @@
   background: var(--bg-primary, #f8fafc);
   min-height: calc(100vh - 70px);
 }
-
-/* Dark mode support */
 [data-theme="dark"] .dashboard-page {
   background: var(--bg-primary-dark, #0f172a);
 }
-
-/* Header */
 .dashboard-header {
   margin-bottom: 2rem;
   text-align: center;
@@ -40,8 +35,6 @@
   color: var(--text-secondary, #64748b);
   margin-top: 0.5rem;
 }
-
-/* Count Grid */
 .dashboard-count-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -84,8 +77,6 @@
   color: var(--text-primary, #0f172a);
   margin: 0;
 }
-
-/* Panels */
 .dashboard-panel {
   background: var(--card-bg, #ffffff);
   border-radius: 1.25rem;
@@ -115,8 +106,6 @@
   color: #3b82f6;
   font-size: 1.1rem;
 }
-
-/* Grid layouts */
 .dashboard-insights-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -137,8 +126,6 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
-
-/* Budget Section */
 .budget-form {
   display: flex;
   gap: 0.75rem;
@@ -195,8 +182,6 @@
   padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
 }
-
-/* Budget Progress */
 .budget-progress {
   margin: 1rem 0;
 }
@@ -222,8 +207,6 @@
   font-size: 0.85rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* Alerts */
 .alert {
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
@@ -242,8 +225,6 @@
 .alert i {
   font-size: 1rem;
 }
-
-/* Insight Grid */
 .insight-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -269,8 +250,6 @@
   font-size: 1rem;
   color: var(--text-primary, #0f172a);
 }
-
-/* Weekday Trend */
 .weekday-trend {
   display: flex;
   flex-direction: column;
@@ -309,8 +288,6 @@
   text-align: right;
   font-size: 0.85rem;
 }
-
-/* Chart Containers */
 .chart-container {
   margin-bottom: 1rem;
 }
@@ -336,8 +313,6 @@
   height: 12px;
   border-radius: 2px;
 }
-
-/* Stats Grid */
 .stats-grid {
   display: flex;
   flex-direction: column;
@@ -371,8 +346,6 @@
   color: var(--text-secondary, #64748b);
   margin-top: 0.25rem;
 }
-
-/* Top Categories */
 .top-categories-list {
   display: flex;
   flex-direction: column;
@@ -405,8 +378,6 @@
   flex: 1;
   font-weight: 500;
 }
-
-/* Spending Velocity */
 .velocity-content {
   text-align: center;
 }
@@ -440,8 +411,6 @@
   margin: 0.5rem 0;
   font-size: 0.9rem;
 }
-
-/* Month-over-Month */
 .mom-content {
   display: flex;
   align-items: center;
@@ -481,8 +450,6 @@
 .mom-change .fa-arrow-down {
   color: #16a34a;
 }
-
-/* Daily Average */
 .daily-avg-content {
   text-align: center;
 }
@@ -494,8 +461,6 @@
   display: block;
   margin-bottom: 0.5rem;
 }
-
-/* Goals Section */
 .goal-form {
   display: flex;
   gap: 0.5rem;
@@ -528,8 +493,6 @@
   background: var(--bg-secondary, #f1f5f9);
   border-radius: 0.75rem;
 }
-
-/* Category Budget */
 .category-budget-list {
   display: flex;
   flex-direction: column;
@@ -575,8 +538,6 @@
   font-size: 0.7rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* Additional Insights */
 .insights-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -603,8 +564,6 @@
   font-weight: 700;
   color: #3b82f6;
 }
-
-/* Recent Expenses */
 .recent-expenses-list {
   display: flex;
   flex-direction: column;
@@ -649,8 +608,6 @@
   font-size: 1rem;
   color: #3b82f6;
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .dashboard-page {
     padding: 1rem;
@@ -694,8 +651,6 @@
     gap: 0.5rem;
   }
 }
-
-/* Dark mode overrides */
 [data-theme="dark"] .dashboard-count-card,
 [data-theme="dark"] .dashboard-panel {
   background: #1e293b;
@@ -729,8 +684,6 @@
   background: #422006;
   color: #fbbf24;
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .dashboard-count-card,
   .dashboard-count-card:hover,

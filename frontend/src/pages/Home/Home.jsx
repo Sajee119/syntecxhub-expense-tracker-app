@@ -64,8 +64,6 @@ const Home = ({ isAuthenticated, user }) => {
           Manage daily spending, understand your habits, and build financial discipline with one
           clean dashboard.
         </p>
-
-        {/* Stats Banner */}
         <div className="home-stats">
           <div className="home-stat">
             <span className="home-stat-number">10+</span>
@@ -103,8 +101,6 @@ const Home = ({ isAuthenticated, user }) => {
           )}
         </div>
       </div>
-
-      {/* Features Section */}
       <div className="home-features">
         <h2 className="home-features-title">
           Powerful Features for Better Finance Management
@@ -121,8 +117,6 @@ const Home = ({ isAuthenticated, user }) => {
           ))}
         </div>
       </div>
-
-      {/* Highlights Section */}
       <div className="home-highlights">
         <article>
           <h3><i className="fa-solid fa-bolt" aria-hidden="true" /> Add expenses quickly</h3>
@@ -137,8 +131,6 @@ const Home = ({ isAuthenticated, user }) => {
           <p>Get instant totals, category breakdowns, and recent activity on your dashboard.</p>
         </article>
       </div>
-
-      {/* Testimonials Section */}
       <div className="home-testimonials">
         <h2 className="home-testimonials-title">
           Loved by Thousands of Users
@@ -156,8 +148,6 @@ const Home = ({ isAuthenticated, user }) => {
           ))}
         </div>
       </div>
-
-      {/* Bottom CTA */}
       <div className="home-cta-bottom">
         <h2>Ready to Take Control of Your Finances?</h2>
         <p>Join thousands of users who trust MyExpense for their daily tracking needs.</p>

@@ -1,16 +1,11 @@
-/* Home.css */
 .home-page {
   min-height: calc(100vh - 70px);
   background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
   overflow-x: hidden;
 }
-
-/* Dark mode support */
 [data-theme="dark"] .home-page {
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
 }
-
-/* Hero Section */
 .home-hero {
   max-width: 900px;
   margin: 0 auto;
@@ -63,8 +58,6 @@
 [data-theme="dark"] .home-hero > p {
   color: #94a3b8;
 }
-
-/* Stats Banner */
 .home-stats {
   display: flex;
   justify-content: center;
@@ -88,8 +81,6 @@
   font-size: 0.85rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* CTA Buttons */
 .home-cta-row {
   display: flex;
   gap: 1rem;
@@ -149,8 +140,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
-
-/* Features Section */
 .home-features {
   max-width: 1200px;
   margin: 0 auto;
@@ -228,8 +217,6 @@
 [data-theme="dark"] .home-feature-card p {
   color: #94a3b8;
 }
-
-/* Highlights Section (Legacy support) */
 .home-highlights {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -288,8 +275,6 @@
 [data-theme="dark"] .home-highlights p {
   color: #94a3b8;
 }
-
-/* Testimonials Section */
 .home-testimonials {
   background: var(--bg-secondary, #f1f5f9);
   padding: 4rem 1.5rem;
@@ -369,8 +354,6 @@
   font-size: 0.8rem;
   color: #3b82f6;
 }
-
-/* CTA Bottom Section */
 .home-cta-bottom {
   text-align: center;
   padding: 4rem 1.5rem;
@@ -397,8 +380,6 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
-
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -422,8 +403,6 @@
 .home-hero .home-btn-primary {
   animation: float 3s ease-in-out infinite;
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .home-hero {
     padding: 3rem 1.5rem;
@@ -500,8 +479,6 @@
     font-size: 1.5rem;
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .home-hero,
   .home-feature-card,
@@ -526,8 +503,6 @@
     animation: none;
   }
 }
-
-/* Accessibility focus states */
 .home-btn:focus-visible,
 .home-feature-card:focus-visible,
 .home-testimonial-card:focus-visible,
@@ -535,8 +510,6 @@
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
-
-/* Print styles */
 @media print {
   .home-page {
     background: white;

@@ -1,11 +1,8 @@
-/* PrivacyPage.css */
 .info-page {
   min-height: calc(100vh - 70px);
   background: var(--bg-primary, #f8fafc);
   padding: 2rem 1.5rem;
 }
-
-/* Dark mode support */
 [data-theme="dark"] .info-page {
   background: var(--bg-primary-dark, #0f172a);
 }
@@ -14,8 +11,6 @@
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* Hero Section */
 .info-page__hero {
   text-align: center;
   margin-bottom: 3rem;
@@ -71,8 +66,6 @@
   margin: 0 auto;
   line-height: 1.5;
 }
-
-/* Content Sections */
 .info-page__content {
   display: flex;
   flex-direction: column;
@@ -125,8 +118,6 @@
 [data-theme="dark"] .info-section h2 {
   color: #f1f5f9;
 }
-
-/* Lists */
 .info-list {
   list-style: none;
   padding: 0;
@@ -163,8 +154,6 @@
 [data-theme="dark"] .info-list li {
   color: #94a3b8;
 }
-
-/* Two-column grid for certain sections */
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -211,8 +200,6 @@
   font-size: 0.9rem;
   line-height: 1.5;
 }
-
-/* Data retention table */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -249,8 +236,6 @@
 [data-theme="dark"] .data-table td {
   border-bottom-color: #334155;
 }
-
-/* Contact section */
 .contact-info {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
@@ -286,8 +271,6 @@
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
-
-/* Last updated */
 .last-updated {
   text-align: center;
   font-size: 0.8rem;
@@ -296,8 +279,6 @@
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color, #e2e8f0);
 }
-
-/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -308,8 +289,6 @@
     transform: translateY(0);
   }
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .info-page {
     padding: 1rem;
@@ -366,8 +345,6 @@
     padding: 1.25rem;
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .info-page__hero,
   .info-section,
@@ -382,8 +359,6 @@
     transform: none;
   }
 }
-
-/* Accessibility focus */
 .info-section:focus-visible,
 .contact-email:focus-visible {
   outline: 2px solid #3b82f6;

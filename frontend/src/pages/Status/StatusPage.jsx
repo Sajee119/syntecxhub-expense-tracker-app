@@ -110,8 +110,6 @@ const StatusPage = () => {
             All systems are monitored 24/7 for optimal performance.
           </p>
         </section>
-
-        {/* Overall Status */}
         <div className="status-overall">
           <div className="status-overall-badge">
             <i className="fa-solid fa-circle-check" aria-hidden="true" />
@@ -121,8 +119,6 @@ const StatusPage = () => {
             Last checked: {currentTime} • No active incidents
           </div>
         </div>
-
-        {/* Services Grid */}
         <div className="status-services-grid">
           {services.map((service, index) => (
             <div key={index} className="status-service-card">
@@ -153,8 +149,6 @@ const StatusPage = () => {
             </div>
           ))}
         </div>
-
-        {/* Uptime Timeline */}
         <div className="status-timeline-section">
           <h3>
             <i className="fa-solid fa-calendar-week" aria-hidden="true" /> 7-Day Uptime History
@@ -171,8 +165,6 @@ const StatusPage = () => {
             <i className="fa-solid fa-chart-line" aria-hidden="true" /> 99.98% uptime over the last 30 days
           </div>
         </div>
-
-        {/* Incident History */}
         <div className="status-incidents-section">
           <h3>
             <i className="fa-solid fa-clock-rotate-left" aria-hidden="true" /> Incident History
@@ -189,8 +181,6 @@ const StatusPage = () => {
             </div>
           ))}
         </div>
-
-        {/* Subscribe Section */}
         <div className="status-subscribe-section">
           <h3>
             <i className="fa-solid fa-bell" aria-hidden="true" /> Get Status Updates

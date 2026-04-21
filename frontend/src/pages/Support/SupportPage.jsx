@@ -61,7 +61,6 @@ const SupportPage = () => {
         </section>
 
         <div className="support-content">
-          {/* Contact Options */}
           <section className="support-section">
             <h2>
               <i className="fa-solid fa-address-card" aria-hidden="true" /> Contact Options
@@ -93,8 +92,6 @@ const SupportPage = () => {
               </div>
             </div>
           </section>
-
-          {/* Live Chat */}
           <section className="support-live-chat">
             <h3>
               <i className="fa-solid fa-message" aria-hidden="true" /> Live Chat Support
@@ -108,8 +105,6 @@ const SupportPage = () => {
               Available now
             </div>
           </section>
-
-          {/* FAQ Section */}
           <section className="support-section">
             <h2>
               <i className="fa-solid fa-circle-question" aria-hidden="true" /> Frequently Asked Questions
@@ -137,8 +132,6 @@ const SupportPage = () => {
               ))}
             </div>
           </section>
-
-          {/* Quick Tips */}
           <section className="support-section">
             <h2>
               <i className="fa-solid fa-lightbulb" aria-hidden="true" /> Quick Tips
@@ -182,8 +175,6 @@ const SupportPage = () => {
               </div>
             </div>
           </section>
-
-          {/* Submit Ticket */}
           <section className="support-section">
             <h2>
               <i className="fa-solid fa-ticket" aria-hidden="true" /> Submit a Support Ticket

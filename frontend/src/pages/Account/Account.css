@@ -1,18 +1,12 @@
-/* Account.css */
 .account-page {
-  /* max-width: 900px; */
   margin: 0 auto;
   padding: 2rem 1.5rem;
   background: var(--bg-primary, #f8fafc);
   min-height: calc(100vh - 70px);
 }
-
-/* Dark mode support */
 [data-theme="dark"] .account-page {
   background: var(--bg-primary-dark, #0f172a);
 }
-
-/* Account Card */
 .account-card {
   align-items: center;
   justify-content: center;
@@ -56,8 +50,6 @@
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color, #e2e8f0);
 }
-
-/* Account Info List */
 .account-list {
   background: var(--bg-secondary, #f1f5f9);
   border-radius: 1rem;
@@ -101,8 +93,6 @@
   font-weight: 600;
   color: var(--text-primary, #0f172a);
 }
-
-/* Forms */
 .account-form {
   background: var(--bg-secondary, #f1f5f9);
   border-radius: 1rem;
@@ -160,8 +150,6 @@
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-
-/* Buttons */
 .account-btn {
   display: inline-flex;
   align-items: center;
@@ -224,8 +212,6 @@
   transform: none;
   box-shadow: none;
 }
-
-/* Account Actions */
 .account-actions {
   display: flex;
   gap: 1rem;
@@ -237,8 +223,6 @@
   flex: 1;
   min-width: 180px;
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .account-page {
     padding: 1rem;
@@ -294,8 +278,6 @@
     font-size: 0.85rem;
   }
 }
-
-/* Dark mode overrides */
 [data-theme="dark"] .account-card {
   background: #1e293b;
   border-color: #334155;
@@ -347,14 +329,10 @@
 [data-theme="dark"] .account-btn-soft:hover {
   background: #475569;
 }
-
-/* Loading state for forms */
 .account-form.loading {
   opacity: 0.7;
   pointer-events: none;
 }
-
-/* Success indicator */
 .account-success {
   background: #dcfce7;
   color: #166534;
@@ -366,8 +344,6 @@
   gap: 0.5rem;
   animation: slideDown 0.3s ease-out;
 }
-
-/* Error indicator */
 .account-error {
   background: #fee2e2;
   color: #991b1b;
@@ -379,8 +355,6 @@
   gap: 0.5rem;
   animation: slideDown 0.3s ease-out;
 }
-
-/* Animations */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -391,8 +365,6 @@
     transform: translateY(0);
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .account-form:hover,
   .account-btn-primary:hover,
@@ -410,21 +382,15 @@
     animation: none;
   }
 }
-
-/* Focus visible for accessibility */
 .account-btn:focus-visible,
 .account-form input:focus-visible,
 .account-form select:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
-
-/* Icons spacing */
 .account-icon {
   margin-right: 0.25rem;
 }
-
-/* Currency badge */
 .currency-badge {
   display: inline-block;
   background: #3b82f6;
@@ -434,8 +400,6 @@
   font-size: 0.75rem;
   font-weight: 600;
 }
-
-/* Info tooltip */
 .account-info-tooltip {
   position: relative;
   display: inline-block;

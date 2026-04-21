@@ -1,11 +1,8 @@
-/* SupportPage.css */
 .support-page {
   min-height: calc(100vh - 70px);
   background: var(--bg-primary, #f8fafc);
   padding: 2rem 1.5rem;
 }
-
-/* Dark mode support */
 [data-theme="dark"] .support-page {
   background: var(--bg-primary-dark, #0f172a);
 }
@@ -14,8 +11,6 @@
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* Hero Section */
 .support-hero {
   text-align: center;
   margin-bottom: 3rem;
@@ -83,8 +78,6 @@
   margin: 0 auto;
   line-height: 1.5;
 }
-
-/* Content Sections */
 .support-content {
   display: flex;
   flex-direction: column;
@@ -151,8 +144,6 @@
 [data-theme="dark"] .support-section h3 {
   color: #e2e8f0;
 }
-
-/* Contact Cards Grid */
 .support-contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -216,8 +207,6 @@
   font-size: 0.8rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* FAQ Section */
 .support-faq-grid {
   display: flex;
   flex-direction: column;
@@ -279,8 +268,6 @@
 [data-theme="dark"] .support-faq-answer {
   border-top-color: #334155;
 }
-
-/* Quick Tips Grid */
 .support-tips-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -333,8 +320,6 @@
   font-size: 0.8rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* Live Chat Section */
 .support-live-chat {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border-radius: 1.5rem;
@@ -379,8 +364,6 @@
   margin-top: 1rem;
   opacity: 0.8;
 }
-
-/* Ticket System */
 .support-ticket-form {
   display: flex;
   flex-direction: column;
@@ -427,8 +410,6 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
-
-/* Status Badge */
 .support-status-badge {
   display: inline-flex;
   align-items: center;
@@ -444,8 +425,6 @@
 .support-status-badge i {
   font-size: 0.7rem;
 }
-
-/* Last Updated */
 .support-last-updated {
   text-align: center;
   font-size: 0.8rem;
@@ -454,8 +433,6 @@
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color, #e2e8f0);
 }
-
-/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -466,8 +443,6 @@
     transform: translateY(0);
   }
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .support-page {
     padding: 1rem;
@@ -524,8 +499,6 @@
     font-size: 0.85rem;
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .support-hero,
   .support-section,
@@ -543,8 +516,6 @@
     transform: none;
   }
 }
-
-/* Accessibility focus */
 .support-section:focus-visible,
 .support-contact-card:focus-visible,
 .support-chat-btn:focus-visible,
@@ -553,8 +524,6 @@
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
-
-/* Print styles */
 @media print {
   .support-page {
     background: white;

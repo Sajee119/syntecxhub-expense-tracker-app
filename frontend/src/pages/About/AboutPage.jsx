@@ -6,7 +6,6 @@ const AboutPage = () => {
 	return (
 		<main className="about-page">
 			<div className="about-page__container">
-				{/* App Information Section */}
 				<section className="about-page__section about-page__intro">
 					<div className="about-page__intro-content">
 						<h1 className="about-page__title">
@@ -20,8 +19,6 @@ const AboutPage = () => {
 						</p>
 					</div>
 				</section>
-
-				{/* Features Section */}
 				<section className="about-page__section">
 					<h2 className="about-page__section-title">
 						<span className="about-page__section-icon"><i className="fa-solid fa-globe" aria-hidden="true"></i></span> Features
@@ -49,8 +46,6 @@ const AboutPage = () => {
 						</div>
 					</div>
 				</section>
-
-				{/* Developer Team Section */}
 				<section className="about-page__section">
 					<h2 className="about-page__section-title">
 						<span className="about-page__section-icon"><i className="fa-solid fa-code" aria-hidden="true"></i></span> Developer
@@ -115,8 +110,6 @@ const AboutPage = () => {
 						</div>
 					</div>
 				</section>
-
-				{/* About This Project Section */}
 				<section className="about-page__section about-page__footer-section">
 					<h2 className="about-page__section-title">
 						<span className="about-page__section-icon"><i className="fa-solid fa-circle-info" aria-hidden="true"></i></span> About This Project

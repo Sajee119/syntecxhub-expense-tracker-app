@@ -1,11 +1,8 @@
-/* TermsPage.css */
 .terms-page {
   min-height: calc(100vh - 70px);
   background: var(--bg-primary, #f8fafc);
   padding: 2rem 1.5rem;
 }
-
-/* Dark mode support */
 [data-theme="dark"] .terms-page {
   background: var(--bg-primary-dark, #0f172a);
 }
@@ -14,8 +11,6 @@
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* Hero Section */
 .terms-hero {
   text-align: center;
   margin-bottom: 3rem;
@@ -83,8 +78,6 @@
   margin: 0 auto;
   line-height: 1.5;
 }
-
-/* Content Sections */
 .terms-content {
   display: flex;
   flex-direction: column;
@@ -154,8 +147,6 @@
 [data-theme="dark"] .terms-section h3 {
   color: #e2e8f0;
 }
-
-/* Lists */
 .terms-list {
   list-style: none;
   padding: 0;
@@ -188,8 +179,6 @@
 [data-theme="dark"] .terms-list li {
   color: #94a3b8;
 }
-
-/* Numbered list for certain sections */
 .terms-list-numbered {
   list-style: none;
   padding: 0;
@@ -221,8 +210,6 @@
 [data-theme="dark"] .terms-list-numbered li {
   color: #94a3b8;
 }
-
-/* Grid layout for certain sections */
 .terms-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -270,8 +257,6 @@
   font-size: 0.9rem;
   line-height: 1.5;
 }
-
-/* Warning/Notice box */
 .terms-notice {
   background: linear-gradient(135deg, #fef3c7, #fde68a);
   border-left: 4px solid #f59e0b;
@@ -300,8 +285,6 @@
 [data-theme="dark"] .terms-notice p {
   color: #fbbf24;
 }
-
-/* Contact section */
 .terms-contact {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
@@ -338,8 +321,6 @@
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
-
-/* Last updated */
 .terms-last-updated {
   text-align: center;
   font-size: 0.8rem;
@@ -358,8 +339,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -370,8 +349,6 @@
     transform: translateY(0);
   }
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .terms-page {
     padding: 1rem;
@@ -424,8 +401,6 @@
     padding: 1.25rem;
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .terms-hero,
   .terms-section,
@@ -440,15 +415,11 @@
     transform: none;
   }
 }
-
-/* Accessibility focus */
 .terms-section:focus-visible,
 .terms-contact-email:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
-
-/* Print styles */
 @media print {
   .terms-page {
     background: white;

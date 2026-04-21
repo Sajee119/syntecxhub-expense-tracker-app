@@ -1,11 +1,8 @@
-/* StatusPage.css */
 .status-page {
   min-height: calc(100vh - 70px);
   background: var(--bg-primary, #f8fafc);
   padding: 2rem 1.5rem;
 }
-
-/* Dark mode support */
 [data-theme="dark"] .status-page {
   background: var(--bg-primary-dark, #0f172a);
 }
@@ -14,8 +11,6 @@
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* Hero Section */
 .status-hero {
   text-align: center;
   margin-bottom: 3rem;
@@ -83,8 +78,6 @@
   margin: 0 auto;
   line-height: 1.5;
 }
-
-/* Overall Status Banner */
 .status-overall {
   background: var(--card-bg, #ffffff);
   border-radius: 1.5rem;
@@ -121,8 +114,6 @@
   color: var(--text-secondary, #64748b);
   font-size: 0.9rem;
 }
-
-/* Services Grid */
 .status-services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -258,8 +249,6 @@
 [data-theme="dark"] .status-metric-value {
   color: #f1f5f9;
 }
-
-/* Uptime Timeline */
 .status-timeline-section {
   background: var(--card-bg, #ffffff);
   border-radius: 1.5rem;
@@ -333,8 +322,6 @@
   font-size: 0.6rem;
   opacity: 0.9;
 }
-
-/* Incident History */
 .status-incidents-section {
   background: var(--card-bg, #ffffff);
   border-radius: 1.5rem;
@@ -410,8 +397,6 @@
   font-size: 0.85rem;
   color: var(--text-secondary, #64748b);
 }
-
-/* Subscribe Section */
 .status-subscribe-section {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border-radius: 1.5rem;
@@ -468,8 +453,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-
-/* Last Updated */
 .status-last-updated {
   text-align: center;
   font-size: 0.8rem;
@@ -478,8 +461,6 @@
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color, #e2e8f0);
 }
-
-/* Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -490,8 +471,6 @@
     transform: translateY(0);
   }
 }
-
-/* Pulse animation for operational status */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -504,8 +483,6 @@
 .status-overall-badge i {
   animation: pulse 2s ease-in-out infinite;
 }
-
-/* Responsive */
 @media (max-width: 768px) {
   .status-page {
     padding: 1rem;
@@ -568,8 +545,6 @@
     align-items: flex-start;
   }
 }
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .status-hero,
   .status-service-card,
@@ -588,16 +563,12 @@
     animation: none;
   }
 }
-
-/* Accessibility focus */
 .status-service-card:focus-visible,
 .status-subscribe-btn:focus-visible,
 .status-subscribe-input:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
-
-/* Print styles */
 @media print {
   .status-page {
     background: white;

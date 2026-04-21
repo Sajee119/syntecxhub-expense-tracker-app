@@ -162,8 +162,6 @@ const Dashboard = ({ user, setToast }) => {
     const map = new Map()
     const today = new Date()
     const currentYear = today.getFullYear()
-
-    // Create data for last 12 months
     for (let i = 11; i >= 0; i--) {
       const date = new Date(currentYear, today.getMonth() - i, 1)
       const year = date.getFullYear()
@@ -209,8 +207,6 @@ const Dashboard = ({ user, setToast }) => {
       return currentAmount > maxAmount ? expense : max
     })
   }, [expenses])
-
-  // Feature 4: Top Spending Categories (top 3)
   const topSpendingCategories = useMemo(() => {
     const categoryTotals = new Map()
     expenses.forEach((expense) => {
@@ -222,8 +218,6 @@ const Dashboard = ({ user, setToast }) => {
       .sort((a, b) => b.value - a.value)
       .slice(0, 3)
   }, [expenses])
-
-  // Feature 7: Daily Average Breakdown
   const dailyAverageBreakdown = useMemo(() => {
     if (expenses.length === 0) return 0
     const daysWithExpenses = new Set()
@@ -234,8 +228,6 @@ const Dashboard = ({ user, setToast }) => {
     const totalAmount = expenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0)
     return daysWithExpenses.size > 0 ? totalAmount / daysWithExpenses.size : 0
   }, [expenses])
-
-  // Feature 8: Quick Stats Summary (Year-to-date, 30-day, 7-day)
   const quickStats = useMemo(() => {
     const today = new Date()
     const yearStart = new Date(today.getFullYear(), 0, 1)
@@ -257,8 +249,6 @@ const Dashboard = ({ user, setToast }) => {
       last30DaysCount: last30Days > 0 ? expenses.filter(exp => new Date(exp.createdAt) >= thirtyDaysAgo).length : 0,
     }
   }, [expenses])
-
-  // Feature 5: Spending Velocity (trend indicator)
   const spendingVelocity = useMemo(() => {
     const today = new Date()
     const currentWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -284,8 +274,6 @@ const Dashboard = ({ user, setToast }) => {
 
     return { trend, change, currentWeekAmount, previousWeekAmount }
   }, [expenses])
-
-  // Feature 3: Month-over-Month Comparison
   const monthOverMonthComparison = useMemo(() => {
     const today = new Date()
     const currentMonth = today.getMonth()
@@ -316,8 +304,6 @@ const Dashboard = ({ user, setToast }) => {
 
     return { thisMonth: thisMonthExpenses, previousMonth: previousMonthExpenses, change }
   }, [expenses])
-
-  // Feature 2 & 6: Budget Alerts & Budget Remaining
   const budgetAlert = useMemo(() => {
     const isExceeded = monthlyBudget > 0 && counts.thisMonthAmount > monthlyBudget
     const remaining = monthlyBudget - counts.thisMonthAmount
@@ -330,8 +316,6 @@ const Dashboard = ({ user, setToast }) => {
       alertMessage: isExceeded ? `Budget exceeded by ${currencySymbol} ${Math.abs(remaining).toFixed(2)}` : null
     }
   }, [monthlyBudget, counts.thisMonthAmount, currencySymbol])
-
-  // Feature 10: Category-wise Budget & spending
   const categorySpending = useMemo(() => {
     const today = new Date()
     const month = today.getMonth()
@@ -622,7 +606,6 @@ const Dashboard = ({ user, setToast }) => {
       </div>
 
       <div className="dashboard-features-grid">
-        {/* Quick Stats Summary */}
         <article className="dashboard-panel stats-panel">
           <h3>
             <i className="fa-solid fa-chart-bar" aria-hidden="true" /> Quick Stats Summary
@@ -645,8 +628,6 @@ const Dashboard = ({ user, setToast }) => {
             </div>
           </div>
         </article>
-
-        {/* Top Spending Categories */}
         {topSpendingCategories.length > 0 && (
           <article className="dashboard-panel top-categories-panel">
             <h3>
@@ -663,8 +644,6 @@ const Dashboard = ({ user, setToast }) => {
             </div>
           </article>
         )}
-
-        {/* Spending Velocity */}
         <article className="dashboard-panel velocity-panel">
           <h3>
             <i className="fa-solid fa-gauge" aria-hidden="true" /> Spending Velocity
@@ -680,8 +659,6 @@ const Dashboard = ({ user, setToast }) => {
             </div>
           </div>
         </article>
-
-        {/* Month-over-Month Comparison */}
         <article className="dashboard-panel mom-panel">
           <h3>
             <i className="fa-solid fa-arrows-left-right" aria-hidden="true" /> Month-over-Month
@@ -701,8 +678,6 @@ const Dashboard = ({ user, setToast }) => {
             </div>
           </div>
         </article>
-
-        {/* Daily Average Breakdown */}
         <article className="dashboard-panel daily-avg-panel">
           <h3>
             <i className="fa-solid fa-calendar-days" aria-hidden="true" /> Daily Average
@@ -712,8 +687,6 @@ const Dashboard = ({ user, setToast }) => {
             <p>Per day across all expense days</p>
           </div>
         </article>
-
-        {/* Spending Goals */}
         <article className="dashboard-panel goals-panel">
           <h3>
             <i className="fa-solid fa-bullseye" aria-hidden="true" /> Spending Goals
@@ -755,8 +728,6 @@ const Dashboard = ({ user, setToast }) => {
             </div>
           )}
         </article>
-
-        {/* Category-wise Budget */}
         {categorySpending.length > 0 && (
           <article className="dashboard-panel category-budget-panel">
             <h3>
