@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import FullPageLoader from '../../components/FullPageLoader/FullPageLoader'
+import ConfirmationModal from '../../components/ConfirmationModal/ConfirmationModal'
 import { apiRequest } from '../../utils/api'
 import handleError from '../../utils/handleError'
 import handleSuccess from '../../utils/handleSuccess'
@@ -29,6 +30,7 @@ const Expense = ({ user, setToast }) => {
   const [dateTo, setDateTo] = useState('')
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
+  const [isUpdateConfirmOpen, setIsUpdateConfirmOpen] = useState(false)
 
   const pageSize = 8
 
@@ -142,11 +144,10 @@ const Expense = ({ user, setToast }) => {
   const resetForm = () => {
     setForm(initialExpenseForm)
     setEditingId(null)
+    setIsUpdateConfirmOpen(false)
   }
 
-  const onSubmit = async (event) => {
-    event.preventDefault()
-
+  const submitExpense = async ({ isEdit }) => {
     if (!form.amount || !form.description || !form.date) {
       setToast({ type: 'error', message: 'Please fill amount, description and date.' })
       return
@@ -161,7 +162,7 @@ const Expense = ({ user, setToast }) => {
 
     setIsSubmitting(true)
     try {
-      if (editingId) {
+      if (isEdit && editingId) {
         await apiRequest(`/expenses/${editingId}`, {
           method: 'PUT',
           body: JSON.stringify(payload),
@@ -185,7 +186,24 @@ const Expense = ({ user, setToast }) => {
     }
   }
 
+  const onSubmit = async (event) => {
+    event.preventDefault()
+
+    if (editingId) {
+      if (!form.amount || !form.description || !form.date) {
+        setToast({ type: 'error', message: 'Please fill amount, description and date.' })
+        return
+      }
+
+      setIsUpdateConfirmOpen(true)
+      return
+    }
+
+    await submitExpense({ isEdit: false })
+  }
+
   const onEdit = (expense) => {
+    setIsUpdateConfirmOpen(false)
     setEditingId(expense._id)
     setForm({
       amount: String(expense.amount),
@@ -229,6 +247,15 @@ const Expense = ({ user, setToast }) => {
     closeDeleteConfirmation()
   }
 
+  const closeUpdateConfirmation = () => {
+    setIsUpdateConfirmOpen(false)
+  }
+
+  const confirmUpdateExpense = async () => {
+    setIsUpdateConfirmOpen(false)
+    await submitExpense({ isEdit: true })
+  }
+
   const onExportCsv = () => {
     if (filteredExpenses.length === 0) {
       setToast({ type: 'error', message: 'No expenses to export.' })
@@ -270,26 +297,26 @@ const Expense = ({ user, setToast }) => {
         <FullPageLoader label={isLoading ? 'Loading expenses...' : 'Saving changes...'} />
       )}
 
-      {expenseToDelete && (
-        <div className="confirm-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="delete-confirmation-title">
-          <div className="confirm-popup-container">
-            <h4 id="delete-confirmation-title">
-              <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" /> Confirm Delete
-            </h4>
-            <p>
-              Are you sure you want to delete <strong>{expenseToDelete.text || 'this expense'}</strong>?
-            </p>
-            <div className="confirm-popup-actions">
-              <button type="button" className="db-btn db-btn-soft" onClick={closeDeleteConfirmation} disabled={isSubmitting}>
-                Cancel
-              </button>
-              <button type="button" className="db-btn db-btn-danger" onClick={confirmDeleteExpense} disabled={isSubmitting}>
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmationModal
+        open={Boolean(expenseToDelete)}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete ${expenseToDelete?.text || 'this expense'}?`}
+        confirmText="Yes, Delete"
+        onConfirm={confirmDeleteExpense}
+        onCancel={closeDeleteConfirmation}
+        danger
+        disabled={isSubmitting}
+      />
+
+      <ConfirmationModal
+        open={Boolean(editingId) && isUpdateConfirmOpen}
+        title="Confirm Expense Update"
+        message={`Update this expense with the current changes: ${form.description || 'expense details'}?`}
+        confirmText="Yes, Update"
+        onConfirm={confirmUpdateExpense}
+        onCancel={closeUpdateConfirmation}
+        disabled={isSubmitting}
+      />
 
       <header className="expense-header">
         <h1>
