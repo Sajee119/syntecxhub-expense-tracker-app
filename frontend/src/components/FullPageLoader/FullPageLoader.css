@@ -6,7 +6,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #000000;
+  background: #0000005f;
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -61,12 +61,12 @@
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.3px;
-  color: #e2e8f0;
+  color: #0653b8;
   text-align: center;
 }
 
 [data-theme="light"] .full-page-loader-label {
-  color: #ffffff;
+  color: #083e95;
 }
 
 @keyframes waveBounce {
